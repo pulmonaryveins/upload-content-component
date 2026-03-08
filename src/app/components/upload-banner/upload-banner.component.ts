@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   ViewEncapsulation,
   computed,
@@ -21,10 +21,12 @@ export class UploadBannerComponent {
   message = input('');
   subMessage = input('');
   suggestion = input<RenameSuggestion | undefined>(undefined);
+  suggestions = input<RenameSuggestion[]>([]);
   suggestionCount = input(0);
 
   rename = output<void>();
-  accept = output<string>();
+  accept = output<void>();
+  closed = output<void>();
 
   readonly isSuggestion = computed(() => this.type() === 'suggestion');
   readonly isDuplicate = computed(() => this.type() === 'duplicate');
@@ -35,8 +37,11 @@ export class UploadBannerComponent {
   }
 
   onAccept(): void {
-    const s = this.suggestion();
-    if (s) this.accept.emit(s.fileId);
+    this.accept.emit();
+  }
+
+  onClose(): void {
+    this.closed.emit();
   }
 
   truncate(str: string, max = 18): string {

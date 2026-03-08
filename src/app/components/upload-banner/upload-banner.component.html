@@ -29,14 +29,20 @@
         <span class="upload-banner__sub">{{ subMessage() }}</span>
       }
       @if (isSuggestion()) {
-        <span class="upload-banner__sub">
-          @if (suggestionCount() > 0) {
-            {{ suggestionCount() }} {{ suggestionCount() === 1 ? 'file' : 'files' }} rename:&nbsp;<button class="upload-banner__view-link" type="button" (click)="onRename()">View details</button>
-          } @else if (suggestion()) {
+        <span class="upload-banner__sub upload-banner__sub--renames">
+          @if (suggestionCount() === 1 && suggestion()) {
             1 file rename:&nbsp;
             <span class="upload-banner__name upload-banner__name--old">{{ truncate(suggestion()!.from) }}</span>
             &nbsp;&#8594;&nbsp;
             <span class="upload-banner__name upload-banner__name--new">{{ truncate(suggestion()!.to) }}</span>
+          } @else if (suggestions().length > 1) {
+            {{ suggestionCount() }} files rename:&nbsp;
+            @for (s of suggestions(); track s.fileId; let last = $last) {
+              <span class="upload-banner__name upload-banner__name--old">{{ truncate(s.from) }}</span>
+              &nbsp;&#8594;&nbsp;
+              <span class="upload-banner__name upload-banner__name--new">{{ truncate(s.to) }}</span>
+              @if (!last) { <span class="upload-banner__sep">&#8202;</span> }
+            }
           }
         </span>
       }

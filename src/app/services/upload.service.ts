@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+﻿import { Injectable, signal, computed, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import Uppy from '@uppy/core';
 import Transloadit from '@uppy/transloadit';
@@ -7,7 +7,7 @@ import { LibraryItem } from '../types/library.types';
 import { buildUploadFile } from '../utils/file.utils';
 import { suggestRename } from '../utils/rename.utils';
 import { LibraryService } from './library.service';
-import { IMAGE_MIME_TYPES } from '../constants/upload.constants';
+import { IMAGE_MIME_TYPES, MAX_FILE_COUNT } from '../constants/upload.constants';
 import { TRANSLOADIT_KEY, TRANSLOADIT_TEMPLATE_ID } from '../constants/transloadit.constants';
 
 @Injectable({ providedIn: 'root' })
@@ -38,16 +38,17 @@ export class UploadService {
 
   readonly suggestions = computed<RenameSuggestion[]>(() => {
     const allCurrentNames = this._allCurrentNames();
+    const reservedNames: string[] = [];
+
     return this._files()
       .filter((f) => f.isDuplicate)
       .map((f) => {
         const others = allCurrentNames.filter(
           (n) => n.id !== f.id && n.ext === f.extension,
         );
-        const suggested = suggestRename(
-          f.currentName,
-          others.map((o) => o.name),
-        );
+        const takenNames = [...others.map((o) => o.name), ...reservedNames];
+        const suggested = suggestRename(f.currentName, takenNames);
+        reservedNames.push(suggested.toLowerCase());
         return { fileId: f.id, from: f.currentName, to: suggested };
       });
   });
@@ -79,8 +80,18 @@ export class UploadService {
       newFiles.push(uploadFile);
     }
 
+    // Enforce file count limit
+    const currentCount = this._files().length;
+    const available = Math.max(0, MAX_FILE_COUNT - currentCount);
+    if (newFiles.length > available) {
+      const rejected = newFiles.length - available;
+      newErrors.push(
+        `Maximum of ${MAX_FILE_COUNT} files allowed. ${rejected} file${rejected !== 1 ? 's' : ''} not added.`,
+      );
+    }
+
     this._errorMessages.update((errs) => [...errs, ...newErrors]);
-    const merged = [...this._files(), ...newFiles];
+    const merged = [...this._files(), ...newFiles.slice(0, available)];
     this._files.set(merged);
     this._recheckDuplicates();
   }
@@ -95,7 +106,11 @@ export class UploadService {
 
   startRename(id: string): void {
     this._files.update((files) =>
-      files.map((f) => (f.id === id ? { ...f, isRenaming: true, renameError: undefined } : f)),
+      files.map((f) =>
+        f.id === id
+          ? { ...f, isRenaming: true, renameError: undefined }
+          : { ...f, isRenaming: false },
+      ),
     );
   }
 
@@ -172,14 +187,25 @@ export class UploadService {
       waitForEncoding: true,
     });
 
+    // Add files to Uppy and build a stable id → UploadFile map
+    const uppyIdMap = new Map<string, UploadFile>();
+    for (const uploadFile of filesToUpload) {
+      const uppyId = uppy.addFile({
+        name: `${uploadFile.currentName}.${uploadFile.extension}`,
+        type: uploadFile.mimeType,
+        data: uploadFile.file,
+      });
+      uppyIdMap.set(uppyId, uploadFile);
+    }
+
     // Track progress per-file
     uppy.on('upload-progress', (file, progress) => {
+      const uploadFile = file ? uppyIdMap.get(file.id) : undefined;
+      if (!uploadFile) return;
+
       const percentage = progress.bytesTotal
         ? Math.round((progress.bytesUploaded / progress.bytesTotal) * 100)
         : 0;
-
-      const uploadFile = filesToUpload.find((f) => f.file.name === file?.name);
-      if (!uploadFile) return;
 
       this._files.update((files) =>
         files.map((f) =>
@@ -197,7 +223,7 @@ export class UploadService {
     });
 
     uppy.on('upload-success', (file, response) => {
-      const uploadFile = filesToUpload.find((f) => f.file.name === file?.name);
+      const uploadFile = file ? uppyIdMap.get(file.id) : undefined;
       if (!uploadFile) return;
 
       this._files.update((files) =>
@@ -208,7 +234,6 @@ export class UploadService {
         ),
       );
 
-      // Resolve the best available URL: Transloadit CDN result > local blob preview
       const assemblyResult = (response.body as Record<string, unknown>) ?? {};
       const resultUrl = this._resolveResultUrl(assemblyResult, uploadFile) ?? uploadFile.previewUrl;
 
@@ -237,15 +262,6 @@ export class UploadService {
     uppy.on('upload-error', (_file, error) => {
       console.error('Upload error:', error);
     });
-
-    // Add files to Uppy
-    for (const uploadFile of filesToUpload) {
-      uppy.addFile({
-        name: `${uploadFile.currentName}.${uploadFile.extension}`,
-        type: uploadFile.mimeType,
-        data: uploadFile.file,
-      });
-    }
 
     uppy.upload();
   }

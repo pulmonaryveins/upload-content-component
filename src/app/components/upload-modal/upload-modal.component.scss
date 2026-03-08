@@ -117,6 +117,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    min-width: 0;
+
+    > * {
+      min-width: 0;
+    }
   }
 
   // â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -147,6 +152,197 @@
 
   &__spinner {
     animation: spin 1s linear infinite;
+  }
+
+  // ── Rename section ────────────────────────────────────────────────────────
+  &__rename-section {
+    border: 1.5px solid #16a34a;
+    border-radius: 0.625rem;
+    background: #f0fdf4;
+  }
+
+  &__rename-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__rename-label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #16a34a;
+    flex-shrink: 0;
+  }
+
+  &__rename-context {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__rename-input-wrap {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__rename-input {
+    @apply w-full px-2.5 py-1.5 rounded-md border border-gray-300 text-sm text-gray-900;
+    @apply focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent;
+    background: white;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &--error {
+      @apply border-red-400 focus:ring-red-400;
+    }
+  }
+
+  &__rename-error {
+    font-size: 0.7rem;
+    color: #dc2626;
+    line-height: 1.2;
+  }
+
+  &__rename-btn {
+    @apply text-xs font-semibold px-3 py-1.5 rounded-md transition-colors;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+
+    &--ghost {
+      background: white;
+      border: 1.5px solid #d1d5db;
+      color: #374151;
+
+      &:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+      }
+    }
+
+    &--primary {
+      background: #16a34a;
+      color: white;
+
+      &:hover { background: #15803d; }
+    }
+  }
+
+  // ── Suggestion details panel ──────────────────────────────────────────────
+  &__suggestion-details {
+    border: 1.5px solid #4ade80;
+    border-radius: 0.625rem;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  &__suggestion-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #166534;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__suggestion-details-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.375rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #16a34a;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #dcfce7;
+    }
+  }
+
+  &__suggestion-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    border-bottom: 1px solid #e5e7eb;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__suggestion-from {
+    color: #6b7280;
+    font-style: italic;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__suggestion-arrow {
+    flex-shrink: 0;
+    color: #9ca3af;
+  }
+
+  &__suggestion-to {
+    color: #15803d;
+    font-weight: 500;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__suggestion-accept-btn {
+    @apply text-xs font-medium px-2 py-1 rounded;
+    background: #16a34a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #15803d;
+    }
+  }
+
+  &__suggestion-rename-btn {
+    @apply text-xs font-medium px-2 py-1 rounded;
+    background: none;
+    color: #16a34a;
+    border: 1px solid #86efac;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover {
+      background: #dcfce7;
+      border-color: #4ade80;
+    }
   }
 }
 
