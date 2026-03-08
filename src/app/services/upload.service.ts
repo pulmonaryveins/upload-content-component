@@ -8,7 +8,6 @@ import { buildUploadFile } from '../utils/file.utils';
 import { suggestRename } from '../utils/rename.utils';
 import { LibraryService } from './library.service';
 import { IMAGE_MIME_TYPES, MAX_FILE_COUNT } from '../constants/upload.constants';
-import { TRANSLOADIT_KEY, TRANSLOADIT_TEMPLATE_ID } from '../constants/transloadit.constants';
 
 @Injectable({ providedIn: 'root' })
 export class UploadService {
@@ -173,15 +172,14 @@ export class UploadService {
     const uppy = new Uppy({ autoProceed: false });
 
     uppy.use(Transloadit, {
-      assemblyOptions: {
-        params: {
-          auth: {
-            key: TRANSLOADIT_KEY,
-            // Unsigned client-side requests require an expiry timestamp
-            expires: this._transloaditExpiry(),
-          },
-          template_id: TRANSLOADIT_TEMPLATE_ID,
-        },
+      assemblyOptions: async () => {
+        const res = await fetch('/api/transloadit/params');
+        if (!res.ok) throw new Error(`Upload server error: HTTP ${res.status}`);
+        const { params, signature } = await res.json();
+        // params is the exact JSON string that was HMAC-signed on the server.
+        // Parsing and passing as object is safe: JSON.stringify(JSON.parse(s)) === s
+        // for simple objects, so Transloadit’s signature check will pass.
+        return { params: JSON.parse(params), signature };
       },
       waitForEncoding: true,
     });
@@ -262,6 +260,20 @@ export class UploadService {
       console.error('Upload error:', error);
     });
 
+    uppy.on('error', (error) => {
+      this._errorMessages.update((msgs) => [
+        ...msgs,
+        error?.message ?? 'Upload failed. Is the proxy server running?',
+      ]);
+    });
+
+    uppy.on('error', (error) => {
+      this._errorMessages.update((msgs) => [
+        ...msgs,
+        error?.message ?? 'Upload failed. Is the proxy server running?',
+      ]);
+    });
+
     uppy.upload();
   }
 
@@ -272,13 +284,6 @@ export class UploadService {
    * Falls back to the local blob preview URL if no result is found.
    * Prefers store_images / store_videos / store_thumbnails steps in that order.
    */
-  /** Returns an expiry string 3 hours from now in Transloadit's required format: YYYY/MM/DD HH:MM:SS+00:00 */
-  private _transloaditExpiry(): string {
-    const d = new Date(Date.now() + 3 * 60 * 60 * 1000);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getUTCFullYear()}/${pad(d.getUTCMonth() + 1)}/${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}+00:00`;
-  }
-
   private _resolveResultUrl(
     body: Record<string, unknown>,
     uploadFile: UploadFile,

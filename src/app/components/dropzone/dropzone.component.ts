@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { openGoogleDrivePicker } from '../../utils/google-drive.utils';
-import { GDRIVE_API_KEY, GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
+import { GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
 import { ALLOWED_MIME_TYPES } from '../../constants/upload.constants';
 
 export type DropzoneTab = 'computer' | 'drive';
@@ -88,8 +88,13 @@ export class DropzoneComponent {
     this.driveError.set('');
     this.isDriveLoading.set(true);
     try {
+      // Fetch the API key from the proxy server so it is never statically bundled
+      const configRes = await fetch('/api/google-drive/config');
+      if (!configRes.ok) throw new Error('Could not fetch Drive configuration from proxy server');
+      const { apiKey } = await configRes.json();
+
       const files = await openGoogleDrivePicker(
-        GDRIVE_API_KEY,
+        apiKey,
         GDRIVE_CLIENT_ID,
         GDRIVE_PROJECT_NUMBER,
         ALLOWED_MIME_TYPES,

@@ -8,6 +8,7 @@
 
 # Node
 /node_modules
+/server/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -44,3 +45,6 @@ Thumbs.db
 # Environment files (contain secrets/API keys)
 src/environments/environment.ts
 src/environments/environment.*.ts
+
+# Server secrets
+server/.env
