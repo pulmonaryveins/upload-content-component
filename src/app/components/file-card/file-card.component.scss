@@ -1,4 +1,4 @@
-.file-card {
+﻿.file-card {
   @apply rounded-xl border border-gray-200 bg-white overflow-hidden flex flex-col;
   @apply transition-all duration-200;
 
@@ -32,16 +32,6 @@
     @apply absolute inset-0 flex items-center justify-center text-gray-400;
   }
 
-  &__duplicate-badge {
-    @apply absolute bottom-0 left-0 right-0;
-    @apply bg-amber-400 text-white text-xs font-semibold;
-    @apply flex items-center gap-1 px-2 py-1 cursor-pointer;
-
-    &:hover {
-      @apply bg-amber-500;
-    }
-  }
-
   &__progress-overlay {
     @apply absolute inset-0 flex flex-col items-center justify-end bg-black/40;
   }
@@ -59,20 +49,50 @@
   }
 
   &__footer {
-    @apply p-2 flex flex-col gap-1;
+    @apply px-2 pt-1.5 pb-2 flex flex-col gap-1;
   }
 
-  &__meta {
-    @apply flex items-center gap-1 flex-wrap;
+  // Name row: filename + chevron toggle
+  &__name-row {
+    @apply flex items-center gap-1 min-w-0;
   }
 
   &__filename {
-    @apply text-xs font-medium text-gray-700 truncate flex-1;
-    max-width: 100%;
+    @apply text-xs font-medium text-gray-700 truncate flex-1 min-w-0;
 
     &--duplicate {
       @apply text-amber-600;
     }
+  }
+
+  &__chevron {
+    @apply flex-shrink-0 flex items-center justify-center w-5 h-5;
+    @apply text-gray-400 hover:text-gray-600 transition-all duration-150;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Info row: TYPE â€¢ SIZE
+  &__info-row {
+    @apply flex items-center gap-1 text-xs text-gray-400;
+  }
+
+  &__type-label {
+    @apply text-xs font-semibold text-gray-400;
+  }
+
+  &__dot {
+    @apply text-gray-300;
+  }
+
+  &__size {
+    @apply text-gray-400;
   }
 
   &__status-badge {
@@ -81,26 +101,11 @@
     &--renamed {
       @apply bg-green-100 text-green-700;
     }
-
-    &--pending {
-      @apply bg-gray-100 text-gray-500;
-    }
   }
 
-  &__info-row {
-    @apply flex items-center gap-1.5 text-xs text-gray-400;
-  }
-
-  &__type-label {
-    @apply text-xs font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 flex-shrink-0;
-  }
-
-  &__size {
-    @apply flex-1;
-  }
-
+  // Expanded action buttons
   &__actions {
-    @apply flex gap-1 flex-shrink-0;
+    @apply flex gap-1 pt-1 border-t border-gray-100;
   }
 
   &__action-btn {

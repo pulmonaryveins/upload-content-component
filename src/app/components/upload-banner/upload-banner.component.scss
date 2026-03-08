@@ -55,6 +55,18 @@
     @apply flex gap-2 flex-shrink-0;
   }
 
+  &__view-link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    @apply text-xs font-semibold underline;
+    color: inherit;
+    opacity: 0.85;
+
+    &:hover { opacity: 1; }
+  }
+
   &__btn {
     @apply text-sm font-medium px-3 py-1.5 rounded cursor-pointer transition-colors;
 

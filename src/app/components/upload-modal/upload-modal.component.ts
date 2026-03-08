@@ -58,7 +58,7 @@ export class UploadModalComponent {
     if (this.files().length === 0) return 'Select files to upload';
     if (this.hasDuplicates()) {
       const n = this.duplicateCount();
-      return `Rename ${n} ${n === 1 ? 'duplicate' : 'duplicates'} first`;
+      return `Rename ${n} ${n === 1 ? 'file' : 'files'} first`;
     }
     if (this.hasErrors()) return 'Fix errors first';
     return `Upload (${this.uploadableCount()}) Content`;

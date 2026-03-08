@@ -21,6 +21,7 @@ export class UploadBannerComponent {
   message = input('');
   subMessage = input('');
   suggestion = input<RenameSuggestion | undefined>(undefined);
+  suggestionCount = input(0);
 
   rename = output<void>();
   accept = output<string>();

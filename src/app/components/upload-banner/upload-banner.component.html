@@ -1,4 +1,4 @@
-<div class="upload-banner" [ngClass]="'upload-banner--' + type()">
+﻿<div class="upload-banner" [ngClass]="'upload-banner--' + type()">
   <div class="upload-banner__body">
     <!-- Icon -->
     <span class="upload-banner__icon">
@@ -28,12 +28,16 @@
       @if (subMessage()) {
         <span class="upload-banner__sub">{{ subMessage() }}</span>
       }
-      @if (isSuggestion() && suggestion()) {
+      @if (isSuggestion()) {
         <span class="upload-banner__sub">
-          1 file rename:&nbsp;
-          <span class="upload-banner__name upload-banner__name--old">{{ truncate(suggestion()!.from) }}</span>
-          &nbsp;→&nbsp;
-          <span class="upload-banner__name upload-banner__name--new">{{ truncate(suggestion()!.to) }}</span>
+          @if (suggestionCount() > 0) {
+            {{ suggestionCount() }} {{ suggestionCount() === 1 ? 'file' : 'files' }} rename:&nbsp;<button class="upload-banner__view-link" type="button" (click)="onRename()">View details</button>
+          } @else if (suggestion()) {
+            1 file rename:&nbsp;
+            <span class="upload-banner__name upload-banner__name--old">{{ truncate(suggestion()!.from) }}</span>
+            &nbsp;&#8594;&nbsp;
+            <span class="upload-banner__name upload-banner__name--new">{{ truncate(suggestion()!.to) }}</span>
+          }
         </span>
       }
     </div>

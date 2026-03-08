@@ -36,18 +36,18 @@
         <app-upload-banner
           type="duplicate"
           message="Duplicate"
-          [subMessage]="duplicateCount() + ' file' + (duplicateCount() !== 1 ? 's' : '') + ' with duplicate title'"
+          [subMessage]="duplicateCount() + (duplicateCount() !== 1 ? ' files with duplicate titles' : ' file with duplicate title')"
         ></app-upload-banner>
       }
 
-      <!-- Suggestion banners (one per duplicate file) -->
-      @for (suggestion of suggestions(); track suggestion.fileId) {
+      <!-- Consolidated suggestion banner -->
+      @if (suggestions().length > 0) {
         <app-upload-banner
           type="suggestion"
           message="Suggestion"
-          [suggestion]="suggestion"
-          (rename)="onRenameSuggestion(suggestion.fileId)"
-          (accept)="onAcceptSuggestion($event)"
+          [suggestionCount]="suggestions().length"
+          (rename)="onRenameSuggestion(suggestions()[0].fileId)"
+          (accept)="onAcceptAllSuggestions()"
         ></app-upload-banner>
       }
 

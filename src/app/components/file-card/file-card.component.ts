@@ -30,6 +30,7 @@ export class FileCardComponent {
 
   readonly renameValue = signal('');
   readonly renameError = signal('');
+  readonly showActions = signal(false);
 
   readonly isImage = computed(() => this.file().mimeType.startsWith('image/'));
   readonly isVideo = computed(() => this.file().mimeType.startsWith('video/'));
@@ -42,6 +43,10 @@ export class FileCardComponent {
     'file-card--uploaded': this.file().status === 'uploaded',
     'file-card--error': this.file().status === 'error',
   }));
+
+  toggleActions(): void {
+    this.showActions.update(v => !v);
+  }
 
   onStartRename(): void {
     this.renameValue.set(this.file().currentName);
