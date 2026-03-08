@@ -35,13 +35,26 @@
             <span class="upload-banner__name upload-banner__name--old">{{ truncate(suggestion()!.from) }}</span>
             &nbsp;&#8594;&nbsp;
             <span class="upload-banner__name upload-banner__name--new">{{ truncate(suggestion()!.to) }}</span>
-          } @else if (suggestions().length > 1) {
-            {{ suggestionCount() }} files rename:&nbsp;
+          } @else if (suggestions().length === 2) {
+            2 files rename:&nbsp;
             @for (s of suggestions(); track s.fileId; let last = $last) {
               <span class="upload-banner__name upload-banner__name--old">{{ truncate(s.from) }}</span>
               &nbsp;&#8594;&nbsp;
               <span class="upload-banner__name upload-banner__name--new">{{ truncate(s.to) }}</span>
               @if (!last) { <span class="upload-banner__sep">&#8202;</span> }
+            }
+          } @else if (suggestions().length > 2) {
+            {{ suggestionCount() }} files to rename
+            <button class="upload-banner__toggle" (click)="toggleDetails()" type="button">
+              {{ showDetails() ? 'Hide details ▲' : 'View details ▼' }}
+            </button>
+            @if (showDetails()) {
+              @for (s of suggestions(); track s.fileId; let last = $last) {
+                <span class="upload-banner__name upload-banner__name--old">{{ truncate(s.from) }}</span>
+                &nbsp;&#8594;&nbsp;
+                <span class="upload-banner__name upload-banner__name--new">{{ truncate(s.to) }}</span>
+                @if (!last) { <span class="upload-banner__sep">&#8202;</span> }
+              }
             }
           }
         </span>
@@ -55,5 +68,10 @@
       <button class="upload-banner__btn upload-banner__btn--outline" (click)="onRename()">Rename</button>
       <button class="upload-banner__btn upload-banner__btn--solid" (click)="onAccept()">Accept</button>
     </div>
+  }
+  @if (isError()) {
+    <button class="upload-banner__close-btn" (click)="onClose()" aria-label="Dismiss">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   }
 </div>

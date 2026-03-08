@@ -1,24 +1,4 @@
 .app-shell {
-  @apply min-h-screen bg-gray-50 flex flex-col;
-
-  &__header {
-    @apply flex items-center justify-between px-8 py-4;
-    @apply bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30;
-  }
-
-  &__brand {
-    @apply text-xl font-bold text-gray-900;
-  }
-
-  &__upload-btn {
-    @apply flex items-center gap-2 px-4 py-2 rounded-lg;
-    @apply bg-green-600 text-white text-sm font-medium;
-    @apply hover:bg-green-700 transition-colors;
-    border: none;
-    cursor: pointer;
-  }
-
-  &__main {
-    @apply flex-1 px-8 py-8 max-w-7xl mx-auto w-full;
-  }
+  min-height: 100vh;
+  background: #f8f9fb;
 }

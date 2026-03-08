@@ -6,7 +6,6 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { openGoogleDrivePicker } from '../../utils/google-drive.utils';
 import { GDRIVE_API_KEY, GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
 import { ALLOWED_MIME_TYPES } from '../../constants/upload.constants';
@@ -16,7 +15,7 @@ export type DropzoneTab = 'computer' | 'drive';
 @Component({
   selector: 'app-dropzone',
   standalone: true,
-  imports: [NgClass],
+  imports: [],
   templateUrl: './dropzone.component.html',
   styleUrls: ['./dropzone.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,

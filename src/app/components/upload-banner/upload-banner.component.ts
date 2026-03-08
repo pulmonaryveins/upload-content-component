@@ -4,6 +4,7 @@
   computed,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { BannerType, RenameSuggestion } from '../../types/upload.types';
@@ -31,6 +32,12 @@ export class UploadBannerComponent {
   readonly isSuggestion = computed(() => this.type() === 'suggestion');
   readonly isDuplicate = computed(() => this.type() === 'duplicate');
   readonly isError = computed(() => this.type() === 'error');
+
+  readonly showDetails = signal(false);
+
+  toggleDetails(): void {
+    this.showDetails.update((v) => !v);
+  }
 
   onRename(): void {
     this.rename.emit();

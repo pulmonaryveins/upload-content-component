@@ -32,8 +32,7 @@ export class UploadService {
   readonly hasDuplicates = computed(() => this.duplicateFiles().length > 0);
 
   readonly hasErrors = computed(() =>
-    this._files().some((f) => f.status === 'error') ||
-    this._errorMessages().length > 0,
+    this._files().some((f) => f.status === 'error'),
   );
 
   readonly suggestions = computed<RenameSuggestion[]>(() => {
