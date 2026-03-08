@@ -1,0 +1,26 @@
+<div class="app-shell">
+  <!-- Top bar -->
+  <header class="app-shell__header">
+    <h1 class="app-shell__brand">Channel Studio</h1>
+    <button class="app-shell__upload-btn" (click)="openModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Upload Content
+    </button>
+  </header>
+
+  <!-- Main content -->
+  <main class="app-shell__main">
+    <app-library></app-library>
+  </main>
+
+  <!-- Upload Modal (portal-style: fixed positioned, outside main flow) -->
+  <app-upload-modal
+    [isOpen]="isModalOpen()"
+    (closed)="onModalClosed()"
+    (uploadEvent)="onUploadEvent($event)"
+  ></app-upload-modal>
+</div>

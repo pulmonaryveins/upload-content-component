@@ -1,0 +1,80 @@
+<div class="file-list-item" [ngClass]="rowClasses()">
+  <!-- Thumbnail -->
+  <div class="file-list-item__thumb">
+    @if (isImage() && file().previewUrl) {
+      <img [src]="file().previewUrl" [alt]="file().currentName" class="file-list-item__thumb-img" loading="lazy" />
+    } @else if (file().previewUrl) {
+      <video [src]="file().previewUrl" autoplay muted loop playsinline class="file-list-item__thumb-img"></video>
+    } @else {
+      <div class="file-list-item__thumb-placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+    }
+  </div>
+
+  <!-- Content -->
+  <div class="file-list-item__content">
+    @if (file().isRenaming) {
+      <div class="file-list-item__rename-row">
+        <input
+          class="file-list-item__rename-input"
+          [class.file-list-item__rename-input--error]="renameError()"
+          type="text"
+          [ngModel]="renameValue()"
+          (ngModelChange)="renameValue.set($event)"
+          (keydown)="onRenameKeydown($event)"
+          autofocus
+        />
+        <button class="file-list-item__icon-btn file-list-item__icon-btn--confirm" (click)="onSaveRename()" title="Save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="file-list-item__icon-btn file-list-item__icon-btn--cancel" (click)="onCancelRename()" title="Cancel">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      @if (renameError()) {
+        <p class="file-list-item__rename-error">{{ renameError() }}</p>
+      }
+    } @else {
+      <div class="file-list-item__name-row">
+        <span class="file-list-item__filename" [class.file-list-item__filename--duplicate]="file().isDuplicate">
+          {{ file().currentName }}.{{ file().extension }}
+        </span>
+        @if (file().isDuplicate) {
+          <span class="file-list-item__badge file-list-item__badge--duplicate">Duplicate — click to rename</span>
+        }
+        @if (file().status === 'renamed') {
+          <span class="file-list-item__badge file-list-item__badge--renamed">renamed</span>
+        }
+      </div>
+    }
+
+    <div class="file-list-item__meta">
+      <span class="file-list-item__type">{{ mediaLabel() }}</span>
+      <span class="file-list-item__size">{{ formattedSize() }}</span>
+      @if (file().status === 'uploading') {
+        <span class="file-list-item__dot">•</span>
+        <span class="file-list-item__progress">{{ file().progress }}%</span>
+      }
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  @if (file().status === 'uploading') {
+    <div class="file-list-item__progress-bar-wrap">
+      <div class="file-list-item__progress-bar" [style.width.%]="file().progress"></div>
+    </div>
+  }
+
+  <!-- Actions -->
+  <div class="file-list-item__actions">
+    @if (!file().isRenaming) {
+      <button class="file-list-item__icon-btn" (click)="onStartRename()" title="Rename">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    }
+    <button class="file-list-item__icon-btn file-list-item__icon-btn--remove" (click)="onRemove()" title="Remove">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<section class="library">
+  <div class="library__header">
+    <h2 class="library__title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Channel Library
+    </h2>
+
+    <div class="library__controls">
+      <span class="library__count">{{ items().length }} item{{ items().length !== 1 ? 's' : '' }}</span>
+
+      <button
+        class="library__view-btn"
+        [class.library__view-btn--active]="viewMode() === 'list'"
+        (click)="setViewMode('list')"
+        title="List view"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+      <button
+        class="library__view-btn"
+        [class.library__view-btn--active]="viewMode() === 'grid'"
+        (click)="setViewMode('grid')"
+        title="Grid view"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  @if (items().length === 0) {
+    <div class="library__empty">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <p>No content uploaded yet.</p>
+      <p class="library__empty-sub">Files you upload will appear here.</p>
+    </div>
+  }
+
+  <!-- Grid view -->
+  @if (items().length > 0 && viewMode() === 'grid') {
+    <div class="library__grid">
+      @for (item of items(); track item.id) {
+        <div class="library__card">
+          <div class="library__card-preview">
+            @if (isImage(item)) {
+              <img [src]="item.url" [alt]="item.name" class="library__card-media" loading="lazy" />
+            } @else {
+              <video [src]="item.url" autoplay muted loop playsinline class="library__card-media"></video>
+            }
+            <span class="library__card-type-badge">{{ item.type.toUpperCase() }}</span>
+          </div>
+          <div class="library__card-info">
+            <span class="library__card-name" [title]="item.filename">{{ item.filename }}</span>
+            <span class="library__card-size">{{ formatBytes(item.size) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- List view -->
+  @if (items().length > 0 && viewMode() === 'list') {
+    <div class="library__list">
+      @for (item of items(); track item.id) {
+        <div class="library__list-item">
+          <div class="library__list-thumb">
+            @if (isImage(item)) {
+              <img [src]="item.url" [alt]="item.name" class="library__list-thumb-img" loading="lazy" />
+            } @else {
+              <video [src]="item.url" autoplay muted loop playsinline class="library__list-thumb-img"></video>
+            }
+          </div>
+          <div class="library__list-content">
+            <span class="library__list-name">{{ item.filename }}</span>
+            <div class="library__list-meta">
+              <span class="library__list-type">{{ item.type.toUpperCase() }}</span>
+              <span>•</span>
+              <span>{{ formatBytes(item.size) }}</span>
+              <span>•</span>
+              <span>{{ item.uploadedAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>

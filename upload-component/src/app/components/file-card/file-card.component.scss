@@ -1,0 +1,143 @@
+.file-card {
+  @apply rounded-xl border border-gray-200 bg-white overflow-hidden flex flex-col;
+  @apply transition-all duration-200;
+
+  &--duplicate {
+    @apply border-amber-400 border-2;
+  }
+
+  &--renamed {
+    @apply border-green-400 border-2;
+  }
+
+  &--uploaded {
+    @apply border-green-500 border-2 opacity-80;
+  }
+
+  &--error {
+    @apply border-red-300 border-2;
+  }
+
+  &__preview {
+    @apply relative w-full overflow-hidden bg-gray-100;
+    aspect-ratio: 16 / 10;
+  }
+
+  &__img,
+  &__video {
+    @apply absolute inset-0 w-full h-full object-cover;
+  }
+
+  &__preview-placeholder {
+    @apply absolute inset-0 flex items-center justify-center text-gray-400;
+  }
+
+  &__duplicate-badge {
+    @apply absolute bottom-0 left-0 right-0;
+    @apply bg-amber-400 text-white text-xs font-semibold;
+    @apply flex items-center gap-1 px-2 py-1 cursor-pointer;
+
+    &:hover {
+      @apply bg-amber-500;
+    }
+  }
+
+  &__progress-overlay {
+    @apply absolute inset-0 flex flex-col items-center justify-end bg-black/40;
+  }
+
+  &__progress-bar {
+    @apply absolute bottom-0 left-0 h-1 bg-green-400 transition-all duration-300;
+  }
+
+  &__progress-text {
+    @apply text-white text-xs font-bold mb-2;
+  }
+
+  &__uploaded-badge {
+    @apply absolute top-2 right-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center;
+  }
+
+  &__footer {
+    @apply p-2 flex flex-col gap-1;
+  }
+
+  &__meta {
+    @apply flex items-center gap-1 flex-wrap;
+  }
+
+  &__filename {
+    @apply text-xs font-medium text-gray-700 truncate flex-1;
+    max-width: 100%;
+
+    &--duplicate {
+      @apply text-amber-600;
+    }
+  }
+
+  &__status-badge {
+    @apply text-xs font-semibold px-1.5 py-0.5 rounded flex-shrink-0;
+
+    &--renamed {
+      @apply bg-green-100 text-green-700;
+    }
+
+    &--pending {
+      @apply bg-gray-100 text-gray-500;
+    }
+  }
+
+  &__info-row {
+    @apply flex items-center gap-1.5 text-xs text-gray-400;
+  }
+
+  &__type-label {
+    @apply text-xs font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 flex-shrink-0;
+  }
+
+  &__size {
+    @apply flex-1;
+  }
+
+  &__actions {
+    @apply flex gap-1 flex-shrink-0;
+  }
+
+  &__action-btn {
+    @apply flex items-center justify-center w-6 h-6 rounded;
+    @apply text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    &--confirm {
+      @apply text-green-500 hover:text-green-700 hover:bg-green-50;
+    }
+
+    &--cancel {
+      @apply text-red-400 hover:text-red-600 hover:bg-red-50;
+    }
+
+    &--remove {
+      @apply hover:text-red-500 hover:bg-red-50;
+    }
+  }
+
+  &__rename-form {
+    @apply flex items-center gap-1;
+  }
+
+  &__rename-input {
+    @apply flex-1 text-xs border border-green-400 rounded px-2 py-1 outline-none;
+    @apply focus:ring-2 focus:ring-green-300;
+
+    &--error {
+      @apply border-red-400 focus:ring-red-300;
+    }
+  }
+
+  &__rename-error {
+    @apply text-red-500 text-xs mt-0.5;
+  }
+}

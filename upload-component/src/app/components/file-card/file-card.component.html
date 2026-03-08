@@ -1,0 +1,103 @@
+<div class="file-card" [ngClass]="cardClasses()">
+  <!-- Media Preview -->
+  <div class="file-card__preview">
+    @if (isImage() && file().previewUrl) {
+      <img
+        class="file-card__img"
+        [src]="file().previewUrl"
+        [alt]="file().currentName"
+        loading="lazy"
+      />
+    }
+    @if (isVideo() && file().previewUrl) {
+      <video
+        class="file-card__video"
+        [src]="file().previewUrl"
+        autoplay
+        muted
+        loop
+        playsinline
+      ></video>
+    }
+    @if (!file().previewUrl) {
+      <div class="file-card__preview-placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+    }
+
+    <!-- Duplicate badge overlay -->
+    @if (file().isDuplicate) {
+      <div class="file-card__duplicate-badge" (click)="onStartRename()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Duplicate — click to rename
+      </div>
+    }
+
+    <!-- Upload progress overlay -->
+    @if (file().status === 'uploading') {
+      <div class="file-card__progress-overlay">
+        <div class="file-card__progress-bar" [style.width.%]="file().progress"></div>
+        <span class="file-card__progress-text">{{ file().progress }}%</span>
+      </div>
+    }
+
+    <!-- Uploaded checkmark -->
+    @if (file().status === 'uploaded') {
+      <div class="file-card__uploaded-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="file-card__footer">
+    @if (file().isRenaming) {
+      <!-- Rename form -->
+      <div class="file-card__rename-form">
+        <input
+          class="file-card__rename-input"
+          [class.file-card__rename-input--error]="renameError()"
+          type="text"
+          [ngModel]="renameValue()"
+          (ngModelChange)="renameValue.set($event)"
+          (keydown)="onRenameKeydown($event)"
+          autofocus
+        />
+        <button class="file-card__action-btn file-card__action-btn--confirm" (click)="onSaveRename()" title="Save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="file-card__action-btn file-card__action-btn--cancel" (click)="onCancelRename()" title="Cancel">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      @if (renameError()) {
+        <p class="file-card__rename-error">{{ renameError() }}</p>
+      }
+    } @else {
+      <!-- Normal state -->
+      <div class="file-card__meta">
+        <span class="file-card__filename" [class.file-card__filename--duplicate]="file().isDuplicate">
+          {{ file().currentName }}.{{ file().extension }}
+        </span>
+        @if (file().status === 'renamed') {
+          <span class="file-card__status-badge file-card__status-badge--renamed">renamed</span>
+        }
+        @if (file().isDuplicate) {
+          <span class="file-card__status-badge file-card__status-badge--pending">pending</span>
+        }
+      </div>
+      <div class="file-card__info-row">
+        <span class="file-card__type-label">{{ mediaLabel() }}</span>
+        <span class="file-card__size">{{ formattedSize() }}</span>
+        <div class="file-card__actions">
+          <button class="file-card__action-btn" (click)="onStartRename()" title="Rename">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="file-card__action-btn file-card__action-btn--remove" (click)="onRemove()" title="Remove">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

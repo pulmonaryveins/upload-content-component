@@ -1,0 +1,123 @@
+.file-list-item {
+  @apply flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-white;
+  @apply transition-all duration-150 relative overflow-hidden;
+
+  &--duplicate {
+    @apply border-amber-300 border-2 bg-amber-50/30;
+  }
+
+  &--renamed {
+    @apply border-green-300 border-2 bg-green-50/30;
+  }
+
+  &--uploaded {
+    @apply border-green-400 border bg-green-50/20 opacity-80;
+  }
+
+  &__thumb {
+    @apply w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0;
+  }
+
+  &__thumb-img {
+    @apply w-full h-full object-cover;
+  }
+
+  &__thumb-placeholder {
+    @apply w-full h-full flex items-center justify-center text-gray-400;
+  }
+
+  &__content {
+    @apply flex-1 min-w-0 flex flex-col gap-0.5;
+  }
+
+  &__name-row {
+    @apply flex items-center gap-2 flex-wrap;
+  }
+
+  &__filename {
+    @apply text-sm font-medium text-gray-800 truncate;
+
+    &--duplicate {
+      @apply text-amber-600;
+    }
+  }
+
+  &__badge {
+    @apply text-xs font-semibold px-1.5 py-0.5 rounded flex-shrink-0;
+
+    &--duplicate {
+      @apply bg-amber-100 text-amber-700;
+    }
+
+    &--renamed {
+      @apply bg-green-100 text-green-700;
+    }
+  }
+
+  &__meta {
+    @apply flex items-center gap-2 text-xs text-gray-400;
+  }
+
+  &__type {
+    @apply text-xs font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 flex-shrink-0;
+  }
+
+  &__dot {
+    @apply text-gray-300;
+  }
+
+  &__size,
+  &__progress {
+    @apply text-gray-400;
+  }
+
+  &__actions {
+    @apply flex gap-1 flex-shrink-0;
+  }
+
+  &__icon-btn {
+    @apply flex items-center justify-center w-7 h-7 rounded;
+    @apply text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    &--confirm {
+      @apply text-green-500 hover:text-green-700 hover:bg-green-50;
+    }
+
+    &--cancel {
+      @apply text-red-400 hover:text-red-600 hover:bg-red-50;
+    }
+
+    &--remove {
+      @apply hover:text-red-500 hover:bg-red-50;
+    }
+  }
+
+  &__rename-row {
+    @apply flex items-center gap-1;
+  }
+
+  &__rename-input {
+    @apply flex-1 text-sm border border-green-400 rounded px-2 py-1 outline-none;
+    @apply focus:ring-2 focus:ring-green-300;
+
+    &--error {
+      @apply border-red-400 focus:ring-red-300;
+    }
+  }
+
+  &__rename-error {
+    @apply text-red-500 text-xs mt-0.5;
+  }
+
+  &__progress-bar-wrap {
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100;
+  }
+
+  &__progress-bar {
+    @apply h-full bg-green-400 transition-all duration-300;
+  }
+}

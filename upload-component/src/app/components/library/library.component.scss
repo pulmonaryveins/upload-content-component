@@ -1,0 +1,117 @@
+.library {
+  @apply flex flex-col gap-4;
+
+  &__header {
+    @apply flex items-center justify-between;
+  }
+
+  &__title {
+    @apply flex items-center gap-2 text-base font-semibold text-gray-800;
+  }
+
+  &__controls {
+    @apply flex items-center gap-2;
+  }
+
+  &__count {
+    @apply text-sm text-gray-500;
+  }
+
+  &__view-btn {
+    @apply flex items-center justify-center w-8 h-8 rounded-lg;
+    @apply text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &--active {
+      @apply text-gray-700 bg-gray-100;
+    }
+  }
+
+  &__empty {
+    @apply flex flex-col items-center justify-center gap-2 py-16;
+    @apply text-gray-400 text-sm;
+
+    svg {
+      @apply text-gray-300;
+    }
+  }
+
+  &__empty-sub {
+    @apply text-xs text-gray-300;
+  }
+
+  // ── Grid ──────────────────────────────────────────────────────────────────
+
+  &__grid {
+    @apply grid gap-4;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  &__card {
+    @apply rounded-xl border border-gray-200 bg-white overflow-hidden;
+    @apply shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  &__card-preview {
+    @apply relative overflow-hidden bg-gray-100;
+    aspect-ratio: 16 / 10;
+  }
+
+  &__card-media {
+    @apply absolute inset-0 w-full h-full object-cover;
+  }
+
+  &__card-type-badge {
+    @apply absolute top-2 left-2 text-xs font-bold px-1.5 py-0.5 rounded;
+    @apply bg-black/50 text-white backdrop-blur-sm;
+  }
+
+  &__card-info {
+    @apply p-2 flex flex-col gap-0.5;
+  }
+
+  &__card-name {
+    @apply text-xs font-medium text-gray-700 truncate;
+  }
+
+  &__card-size {
+    @apply text-xs text-gray-400;
+  }
+
+  // ── List ──────────────────────────────────────────────────────────────────
+
+  &__list {
+    @apply flex flex-col gap-2;
+  }
+
+  &__list-item {
+    @apply flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-white;
+    @apply hover:bg-gray-50 transition-colors;
+  }
+
+  &__list-thumb {
+    @apply w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0;
+  }
+
+  &__list-thumb-img {
+    @apply w-full h-full object-cover;
+  }
+
+  &__list-content {
+    @apply flex-1 min-w-0;
+  }
+
+  &__list-name {
+    @apply text-sm font-medium text-gray-800 truncate block;
+  }
+
+  &__list-meta {
+    @apply flex items-center gap-1.5 text-xs text-gray-400 mt-0.5;
+  }
+
+  &__list-type {
+    @apply font-medium text-gray-500;
+  }
+}
