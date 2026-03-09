@@ -1,6 +1,7 @@
 import { UploadFile } from '../types/upload.types';
 import {
   ALLOWED_MIME_TYPES,
+  DANGEROUS_EXTENSIONS,
   INVALID_FILENAME_REGEX,
   MAX_FILENAME_LENGTH,
   IMAGE_MIME_TYPES,
@@ -29,28 +30,40 @@ export function buildUploadFile(
   file: File,
 ): { uploadFile: UploadFile; error?: string } {
   const { name: stem, ext } = splitFilename(file.name);
+  // Normalize MIME type to lowercase for case-insensitive validation (Row 4)
+  const mimeType = file.type.toLowerCase();
 
-  // MIME validation
-  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+  // Fake / double-extension detection (Row 3)
+  // e.g. malware.exe.mp4 → stem = "malware.exe" → stemExt = "exe"
+  const { ext: stemExt } = splitFilename(stem);
+  if (stemExt && DANGEROUS_EXTENSIONS.includes(stemExt.toLowerCase())) {
     return {
-      uploadFile: makeErrorFile(file, stem, ext),
-      error: `Unsupported file type "${file.type || ext}". Only PNG, JPEG, MP4 and WEBM are allowed.`,
+      uploadFile: makeErrorFile(file, stem, ext, mimeType),
+      error: `Security warning: "${file.name}" contains a suspicious embedded extension ".${stemExt}". Upload blocked.`,
+    };
+  }
+
+  // MIME validation — normalized to lowercase (Row 4)
+  if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
+    return {
+      uploadFile: makeErrorFile(file, stem, ext, mimeType),
+      error: `Unsupported file type "${mimeType || ext}". Only PNG, JPEG, MP4 and WEBM are allowed.`,
     };
   }
 
   // Length validation (full filename with extension)
   if (file.name.length > MAX_FILENAME_LENGTH) {
     return {
-      uploadFile: makeErrorFile(file, stem, ext),
+      uploadFile: makeErrorFile(file, stem, ext, mimeType),
       error: `Filename is too long (max ${MAX_FILENAME_LENGTH} characters).`,
     };
   }
 
-  // Special character validation
+  // Special character validation (Row 1): only letters, numbers, underscores, periods allowed
   if (INVALID_FILENAME_REGEX.test(stem)) {
     return {
-      uploadFile: makeErrorFile(file, stem, ext),
-      error: 'File names cannot contain special characters including spaces and parenthesis',
+      uploadFile: makeErrorFile(file, stem, ext, mimeType),
+      error: 'File names may only contain letters, numbers, underscores, and periods.',
     };
   }
 
@@ -61,7 +74,7 @@ export function buildUploadFile(
     originalName: stem,
     currentName: stem,
     extension: ext,
-    mimeType: file.type,
+    mimeType,
     size: file.size,
     file,
     previewUrl,
@@ -87,13 +100,13 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function makeErrorFile(file: File, stem: string, ext: string): UploadFile {
+function makeErrorFile(file: File, stem: string, ext: string, mimeType?: string): UploadFile {
   return {
     id: generateId(),
     originalName: stem,
     currentName: stem,
     extension: ext,
-    mimeType: file.type,
+    mimeType: mimeType ?? file.type.toLowerCase(),
     size: file.size,
     file,
     previewUrl: '',

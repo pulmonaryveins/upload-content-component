@@ -46,7 +46,7 @@ export class UploadService {
         );
         const takenNames = [...others.map((o) => o.name), ...reservedNames];
         const suggested = suggestRename(f.currentName, takenNames);
-        reservedNames.push(suggested.toLowerCase());
+        reservedNames.push(suggested);
         return { fileId: f.id, from: f.currentName, to: suggested };
       });
   });
@@ -310,7 +310,7 @@ export class UploadService {
   private _allCurrentNames(): Array<{ id: string; name: string; ext: string }> {
     return this._files().map((f) => ({
       id: f.id,
-      name: f.currentName.toLowerCase(),
+      name: f.currentName,
       ext: f.extension.toLowerCase(),
     }));
   }
@@ -321,19 +321,19 @@ export class UploadService {
 
     this._files.update((files) =>
       files.map((file) => {
-        const nameLower = file.currentName.toLowerCase();
+        const nameCurrent = file.currentName;
         const extLower = file.extension.toLowerCase();
 
-        // Check against library
+        // Check against library (case-sensitive on name)
         const libDuplicate = libraryPairs.some(
-          (p) => p.name === nameLower && p.ext === extLower,
+          (p) => p.name === nameCurrent && p.ext === extLower,
         );
 
-        // Check against other files in same batch (same name+ext, different id)
+        // Check against other files in same batch (case-sensitive on name)
         const batchDuplicate = currentFiles.some(
           (other) =>
             other.id !== file.id &&
-            other.currentName.toLowerCase() === nameLower &&
+            other.currentName === nameCurrent &&
             other.extension.toLowerCase() === extLower,
         );
 

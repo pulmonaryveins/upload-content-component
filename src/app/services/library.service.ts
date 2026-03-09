@@ -30,10 +30,10 @@ export class LibraryService {
     return this._items().map((i) => i.filename.toLowerCase());
   }
 
-  /** Returns all current name+ext pairs for cross-type-aware duplicate checking */
+  /** Returns all current name+ext pairs for cross-type-aware duplicate checking (case-sensitive on name) */
   getExistingNameExtPairs(): Array<{ name: string; ext: string }> {
     return this._items().map((i) => ({
-      name: i.name.toLowerCase(),
+      name: i.name,
       ext: i.extension.toLowerCase(),
     }));
   }

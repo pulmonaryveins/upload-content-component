@@ -7,10 +7,12 @@ import {
   viewChild,
 } from '@angular/core';
 import { openGoogleDrivePicker } from '../../utils/google-drive.utils';
+import { openDropboxChooser } from '../../utils/dropbox.utils';
 import { GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
+import { DROPBOX_APP_KEY, DROPBOX_ALLOWED_EXTENSIONS } from '../../constants/dropbox.constants';
 import { ALLOWED_MIME_TYPES } from '../../constants/upload.constants';
 
-export type DropzoneTab = 'computer' | 'drive';
+export type DropzoneTab = 'computer' | 'drive' | 'dropbox';
 
 @Component({
   selector: 'app-dropzone',
@@ -28,12 +30,15 @@ export class DropzoneComponent {
   readonly activeTab = signal<DropzoneTab>('computer');
   readonly isDriveLoading = signal(false);
   readonly driveError = signal('');
+  readonly isDropboxLoading = signal(false);
+  readonly dropboxError = signal('');
 
   private _dragCounter = 0;
 
   setTab(tab: DropzoneTab): void {
     this.activeTab.set(tab);
     this.driveError.set('');
+    this.dropboxError.set('');
   }
 
   onDragEnter(event: DragEvent): void {
@@ -108,6 +113,25 @@ export class DropzoneComponent {
       );
     } finally {
       this.isDriveLoading.set(false);
+    }
+  }
+
+  // ── Dropbox ──────────────────────────────────────────────────────────────
+
+  async openDropboxPicker(): Promise<void> {
+    this.dropboxError.set('');
+    this.isDropboxLoading.set(true);
+    try {
+      const files = await openDropboxChooser(DROPBOX_APP_KEY, DROPBOX_ALLOWED_EXTENSIONS);
+      if (files.length > 0) {
+        this.filesDropped.emit(files);
+      }
+    } catch (err) {
+      this.dropboxError.set(
+        err instanceof Error ? err.message : 'Failed to open Dropbox',
+      );
+    } finally {
+      this.isDropboxLoading.set(false);
     }
   }
 }
