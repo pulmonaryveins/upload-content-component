@@ -9,4 +9,7 @@ export const environment = {
     clientId: 'YOUR_GOOGLE_OAUTH_CLIENT_ID',
     projectNumber: 'YOUR_GOOGLE_PROJECT_NUMBER',
   },
+  dropbox: {
+    appKey: 'YOUR_DROPBOX_APP_KEY',
+  },
 };

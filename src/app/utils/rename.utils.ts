@@ -2,16 +2,15 @@ import { RENAME_INVALID_CHAR_REGEX } from '../constants/upload.constants';
 
 /**
  * Suggests the lowest available rename for `name` given a set of taken names.
- * Tries name_1, name_2, name_3 ... until one is free.
- * Comparison is case-insensitive.
+ * Tries name(1), name(2), name(3) ... until one is free.
+ * Comparison is case-sensitive (Test and test are distinct filenames).
  */
 export function suggestRename(name: string, takenNames: string[]): string {
-  const lower = takenNames.map((n) => n.toLowerCase());
   let counter = 1;
-  while (lower.includes(`${name.toLowerCase()}_${counter}`)) {
+  while (takenNames.includes(`${name}(${counter})`)) {
     counter++;
   }
-  return `${name}_${counter}`;
+  return `${name}(${counter})`;
 }
 
 /**
