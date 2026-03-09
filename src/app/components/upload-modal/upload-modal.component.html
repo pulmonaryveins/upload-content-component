@@ -61,7 +61,7 @@
           @if (viewMode() === 'list') {
             <div class="upload-modal__list">
               @for (file of files(); track file.id) {
-                <app-file-list-item [file]="file" (remove)="onRemoveFile($event)" (startRename)="onStartRename($event)" (saveRename)="onSaveRenameFromList($event)" (cancelRename)="onCancelRenameFromList($event)"></app-file-list-item>
+                <app-file-list-item [file]="file" (remove)="onRemoveFile($event)" (startRename)="onStartRename($event)" (acceptSuggestion)="onAcceptSuggestion($event)" (saveRename)="onSaveRenameFromList($event)" (cancelRename)="onCancelRenameFromList($event)"></app-file-list-item>
               }
             </div>
           }

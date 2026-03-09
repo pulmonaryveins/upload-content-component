@@ -66,5 +66,46 @@ app.get('/api/google-drive/config', (req, res) => {
   res.json({ apiKey: GOOGLE_API_KEY });
 });
 
+// ── GET /api/google-drive/download ─────────────────────────────────────────
+// Proxies a Google Drive file download server-side so the browser never sends
+// the OAuth Bearer token directly to googleapis.com.
+app.get('/api/google-drive/download', async (req, res) => {
+  const { fileId, token } = req.query;
+
+  if (!fileId || typeof fileId !== 'string') {
+    return res.status(400).json({ error: 'Missing required query param: fileId' });
+  }
+  if (!token || typeof token !== 'string') {
+    return res.status(400).json({ error: 'Missing required query param: token' });
+  }
+
+  const url = `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media`;
+
+  try {
+    const driveRes = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!driveRes.ok) {
+      return res.status(driveRes.status).json({ error: `Google Drive returned HTTP ${driveRes.status}` });
+    }
+
+    const contentType = driveRes.headers.get('content-type') ?? 'application/octet-stream';
+    res.setHeader('Content-Type', contentType);
+
+    const reader = driveRes.body.getReader();
+    const pump = async () => {
+      const { done, value } = await reader.read();
+      if (done) { res.end(); return; }
+      res.write(Buffer.from(value));
+      return pump();
+    };
+    await pump();
+  } catch (err) {
+    console.error('Drive download error:', err);
+    res.status(502).json({ error: 'Failed to fetch file from Google Drive' });
+  }
+});
+
 const PORT = process.env.PORT ?? 3000;
 app.listen(PORT, () => console.log(`Proxy server listening on http://localhost:${PORT}`));

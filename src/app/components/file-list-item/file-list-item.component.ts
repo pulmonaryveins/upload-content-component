@@ -24,6 +24,7 @@ export class FileListItemComponent {
 
   remove = output<string>();
   startRename = output<string>();
+  acceptSuggestion = output<string>();
   saveRename = output<{ id: string; name: string }>();
   cancelRename = output<string>();
 
@@ -49,6 +50,10 @@ export class FileListItemComponent {
 
   onStartRename(): void {
     this.startRename.emit(this.file().id);
+  }
+
+  onAcceptSuggestion(): void {
+    this.acceptSuggestion.emit(this.file().id);
   }
 
   onSaveRename(): void {

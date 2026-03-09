@@ -51,10 +51,8 @@ async function downloadDriveFile(
   mimeType: string,
   token: string,
 ): Promise<File> {
-  const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
+  const params = new URLSearchParams({ fileId, token });
+  const res = await fetch(`/api/google-drive/download?${params}`);
   if (!res.ok) {
     throw new Error(`Could not download "${fileName}" (HTTP ${res.status})`);
   }
