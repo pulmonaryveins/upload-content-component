@@ -26,7 +26,6 @@
     <!-- Upload progress overlay -->
     @if (file().status === 'uploading') {
       <div class="file-card__progress-overlay">
-        <div class="file-card__progress-bar" [style.width.%]="file().progress"></div>
         <span class="file-card__progress-text">{{ file().progress }}%</span>
       </div>
     }
@@ -60,4 +59,12 @@
       <span class="file-card__size">{{ formattedSize() }}</span>
     </div>
   </div>
+
+  <!-- SVG border progress (uploading state) -->
+  @if (file().status === 'uploading') {
+    <svg class="file-card__border-progress" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" width="100%" height="100%">
+      <rect x="1" y="1" width="98" height="98" rx="10" ry="10" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="2" />
+      <rect class="file-card__border-progress-fill" x="1" y="1" width="98" height="98" rx="10" ry="10" fill="none" stroke="#8DCB2C" stroke-width="2" stroke-linecap="round" [attr.stroke-dasharray]="file().progress + ' 100'" pathLength="100" />
+    </svg>
+  }
 </div>

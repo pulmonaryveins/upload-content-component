@@ -21,6 +21,10 @@
     opacity: 0.8;
   }
 
+  &--uploading {
+    border-color: transparent;
+  }
+
   &--error {
     @apply border-red-300 border-2;
   }
@@ -81,17 +85,29 @@
     }
   }
 
-  &__progress-overlay {
-    @apply absolute inset-0 flex flex-col items-center justify-end bg-black/40;
+  &__border-progress {
+    position: absolute;
+    inset: 0;
+    display: block;
+    pointer-events: none;
+    z-index: 10;
   }
 
-  &__progress-bar {
-    @apply absolute bottom-0 left-0 h-1 transition-all duration-300;
-    background: #8dcb2c;
+  &__border-progress-fill {
+    transition: stroke-dasharray 0.3s ease;
+  }
+
+  &__progress-overlay {
+    @apply absolute inset-0 flex items-center justify-center;
   }
 
   &__progress-text {
-    @apply text-white text-xs font-bold mb-2;
+    @apply text-white text-xs font-bold;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 2px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(2px);
+    z-index: 2;
   }
 
   &__uploaded-badge {

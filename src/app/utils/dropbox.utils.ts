@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare const Dropbox: any;
 
-import { loadScript } from './script-loader.utils';
+const CHOOSER_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 async function loadDropboxChooserSdk(appKey: string): Promise<void> {
   if (document.getElementById('dropbox-chooser-sdk')) {
@@ -21,7 +21,8 @@ async function loadDropboxChooserSdk(appKey: string): Promise<void> {
 }
 
 async function downloadDropboxFile(url: string, fileName: string): Promise<File> {
-  const res = await fetch(url);
+  const params = new URLSearchParams({ url });
+  const res = await fetch(`/api/dropbox/download?${params}`);
   if (!res.ok) {
     throw new Error(`Could not download "${fileName}" (HTTP ${res.status})`);
   }
@@ -31,7 +32,7 @@ async function downloadDropboxFile(url: string, fileName: string): Promise<File>
 
 /**
  * Opens the Dropbox Chooser and returns the selected files as browser File objects.
- * Returns an empty array if the user cancels.
+ * Returns an empty array if the user cancels or closes the picker.
  */
 export async function openDropboxChooser(
   appKey: string,
@@ -44,24 +45,49 @@ export async function openDropboxChooser(
   Dropbox.appKey = appKey;
 
   return new Promise((resolve, reject) => {
-    Dropbox.choose({
-      success: async (files: Array<{ link: string; name: string }>) => {
-        try {
-          const downloaded = await Promise.all(
-            files.map((f) => downloadDropboxFile(f.link, f.name)),
-          );
-          resolve(downloaded);
-        } catch (err) {
-          reject(err);
-        }
-      },
-      cancel: () => {
-        resolve([]);
-      },
-      linkType: 'direct',
-      multiselect: true,
-      extensions: allowedExtensions,
-      folderselect: false,
-    });
+    let settled = false;
+
+    const settle = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      fn();
+    };
+
+    // Safety net: if the SDK silently swallows errors (e.g. COOP blocking
+    // window.closed polling) neither callback fires — resolve with empty array
+    // so the loading state always clears.
+    const timer = setTimeout(
+      () => settle(() => resolve([])),
+      CHOOSER_TIMEOUT_MS,
+    );
+
+    try {
+      Dropbox.choose({
+        success: async (files: Array<{ link: string; name: string }>) => {
+          clearTimeout(timer);
+          settle(async () => {
+            try {
+              const downloaded = await Promise.all(
+                files.map((f) => downloadDropboxFile(f.link, f.name)),
+              );
+              resolve(downloaded);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        },
+        cancel: () => {
+          clearTimeout(timer);
+          settle(() => resolve([]));
+        },
+        linkType: 'direct',
+        multiselect: true,
+        extensions: allowedExtensions,
+        folderselect: false,
+      });
+    } catch (err) {
+      clearTimeout(timer);
+      settle(() => reject(err));
+    }
   });
 }

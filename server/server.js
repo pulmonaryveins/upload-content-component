@@ -6,6 +6,12 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
 
+// Allow cross-origin popups (e.g. Dropbox Chooser) to communicate with the opener
+app.use((_req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+  next();
+});
+
 // Only allow requests from origins listed in ALLOWED_ORIGINS
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:4200').split(',');
 app.use(
@@ -104,6 +110,40 @@ app.get('/api/google-drive/download', async (req, res) => {
   } catch (err) {
     console.error('Drive download error:', err);
     res.status(502).json({ error: 'Failed to fetch file from Google Drive' });
+  }
+});
+
+// ── GET /api/dropbox/download ───────────────────────────────────────────────
+// Proxies a Dropbox direct-link download server-side to avoid browser CORS
+// restrictions on Dropbox CDN redirects.
+app.get('/api/dropbox/download', async (req, res) => {
+  const { url } = req.query;
+
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Missing required query param: url' });
+  }
+
+  try {
+    const dropboxRes = await fetch(url);
+
+    if (!dropboxRes.ok) {
+      return res.status(dropboxRes.status).json({ error: `Dropbox returned HTTP ${dropboxRes.status}` });
+    }
+
+    const contentType = dropboxRes.headers.get('content-type') ?? 'application/octet-stream';
+    res.setHeader('Content-Type', contentType);
+
+    const reader = dropboxRes.body.getReader();
+    const pump = async () => {
+      const { done, value } = await reader.read();
+      if (done) { res.end(); return; }
+      res.write(Buffer.from(value));
+      return pump();
+    };
+    await pump();
+  } catch (err) {
+    console.error('Dropbox download error:', err);
+    res.status(502).json({ error: 'Failed to fetch file from Dropbox' });
   }
 });
 

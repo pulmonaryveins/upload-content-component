@@ -6,6 +6,7 @@
 
   &--duplicate {
     border: 1px solid #fcd34d;
+    background: rgba(253, 186, 116, 0.08);
   }
 
   &--renamed {
@@ -36,7 +37,7 @@
   }
 
   &__thumb {
-    @apply w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0;
+    @apply w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0;
   }
 
   &__thumb-img {
