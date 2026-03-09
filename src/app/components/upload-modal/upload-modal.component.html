@@ -13,7 +13,7 @@
     </div>
     <div class="upload-modal__body">
       <app-dropzone (filesDropped)="onFilesDropped($event)"></app-dropzone>
-      @for (msg of errorMessages(); track msg) {
+      @for (msg of errorMessages(); track $index) {
         <app-upload-banner type="error" [message]="msg" (closed)="onClearErrors()"></app-upload-banner>
       }
       @if (hasDuplicates()) {

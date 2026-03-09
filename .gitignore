@@ -45,3 +45,5 @@ Thumbs.db
 # Environment files (contain secrets/API keys)
 src/environments/environment.ts
 src/environments/environment.*.ts
+
+server/.env
