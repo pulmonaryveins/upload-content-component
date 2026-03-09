@@ -1,4 +1,4 @@
-export const environment = {
+﻿export const environment = {
   production: false,
   transloadit: {
     key: 'YOUR_TRANSLOADIT_KEY',

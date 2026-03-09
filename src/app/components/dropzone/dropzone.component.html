@@ -1,4 +1,4 @@
-<!-- Tab bar -->
+﻿<!-- Tab bar -->
 <div class="dropzone-tabs">
     <button
       class="dropzone-tabs__tab"
@@ -28,6 +28,21 @@
         <path d="M73.4 26.5l-12.8-22.2c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 27.95h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
       </svg>
       Google Drive
+    </button>
+    <button
+      class="dropzone-tabs__tab"
+      [class.dropzone-tabs__tab--active]="activeTab() === 'dropbox'"
+      (click)="setTab('dropbox')"
+      type="button"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 528 528" fill="none">
+        <path d="M132 16L0 105.6 132 195.2 264 105.6 132 16z" fill="#0061FF"/>
+        <path d="M396 16L264 105.6 396 195.2 528 105.6 396 16z" fill="#0061FF"/>
+        <path d="M0 284.8L132 374.4 264 284.8 132 195.2 0 284.8z" fill="#0061FF"/>
+        <path d="M528 284.8L396 195.2 264 284.8 396 374.4 528 284.8z" fill="#0061FF"/>
+        <path d="M132 398.4L264 308.8 396 398.4 264 488 132 398.4z" fill="#0061FF"/>
+      </svg>
+      Dropbox
     </button>
   </div>
 
@@ -96,6 +111,49 @@
         <p class="dropzone__drive-error">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           {{ driveError() }}
+        </p>
+      }
+    </div>
+  }
+
+  <!-- Dropbox tab -->
+  @if (activeTab() === 'dropbox') {
+    <div class="dropzone dropzone--dropbox">
+      <div class="dropzone__drive-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528 528" width="52" height="52" fill="none">
+          <path d="M132 16L0 105.6 132 195.2 264 105.6 132 16z" fill="#0061FF"/>
+          <path d="M396 16L264 105.6 396 195.2 528 105.6 396 16z" fill="#0061FF"/>
+          <path d="M0 284.8L132 374.4 264 284.8 132 195.2 0 284.8z" fill="#0061FF"/>
+          <path d="M528 284.8L396 195.2 264 284.8 396 374.4 528 284.8z" fill="#0061FF"/>
+          <path d="M132 398.4L264 308.8 396 398.4 264 488 132 398.4z" fill="#0061FF"/>
+        </svg>
+      </div>
+      <p class="dropzone__headline">Dropbox</p>
+      <p class="dropzone__sub">Browse and import files from your Dropbox</p>
+      <button
+        class="dropzone__dropbox-btn"
+        (click)="openDropboxPicker()"
+        [disabled]="isDropboxLoading()"
+        type="button"
+      >
+        @if (isDropboxLoading()) {
+          <svg class="dropzone__drive-spinner" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          Connecting&hellip;
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 528 528" fill="none">
+            <path d="M132 16L0 105.6 132 195.2 264 105.6 132 16z" fill="#fff"/>
+            <path d="M396 16L264 105.6 396 195.2 528 105.6 396 16z" fill="#fff"/>
+            <path d="M0 284.8L132 374.4 264 284.8 132 195.2 0 284.8z" fill="#fff"/>
+            <path d="M528 284.8L396 195.2 264 284.8 396 374.4 528 284.8z" fill="#fff"/>
+            <path d="M132 398.4L264 308.8 396 398.4 264 488 132 398.4z" fill="#fff"/>
+          </svg>
+          Open Dropbox
+        }
+      </button>
+      @if (dropboxError()) {
+        <p class="dropzone__drive-error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {{ dropboxError() }}
         </p>
       }
     </div>
