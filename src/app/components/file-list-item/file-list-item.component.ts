@@ -34,9 +34,10 @@ export class FileListItemComponent {
   readonly mediaLabel = computed(() => getMediaLabel(this.file().mimeType));
   readonly formattedSize = computed(() => formatBytes(this.file().size));
   readonly rowClasses = computed(() => ({
-    'file-list-item--duplicate': this.file().isDuplicate,
+    'file-list-item--duplicate': this.file().isDuplicate && !this.file().isRenaming,
     'file-list-item--renamed': this.file().status === 'renamed',
-    'file-list-item--renaming': this.file().isRenaming,
+    'file-list-item--renaming': this.file().isRenaming && !this.file().isDuplicate,
+    'file-list-item--renaming-duplicate': this.file().isRenaming && this.file().isDuplicate,
     'file-list-item--uploaded': this.file().status === 'uploaded',
   }));
 

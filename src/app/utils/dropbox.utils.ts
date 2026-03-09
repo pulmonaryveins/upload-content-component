@@ -1,21 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare const Dropbox: any;
 
-function loadScript(id: string, src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (document.getElementById(id)) {
-      resolve();
-      return;
-    }
-    const script = document.createElement('script');
-    script.id = id;
-    script.src = src;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Failed to load ${src}`));
-    document.head.appendChild(script);
-  });
-}
+import { loadScript } from './script-loader.utils';
 
 async function loadDropboxChooserSdk(appKey: string): Promise<void> {
   if (document.getElementById('dropbox-chooser-sdk')) {

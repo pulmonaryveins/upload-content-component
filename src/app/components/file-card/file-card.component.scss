@@ -4,7 +4,7 @@
   position: relative;
 
   &--duplicate {
-    @apply border-amber-400 border-2;
+    @apply border-amber-400 border;
   }
 
   &--renamed {
@@ -12,7 +12,7 @@
   }
 
   &--renaming {
-    border: 2px solid #8dcb2c;
+    border: 1px solid #8dcb2c;
     box-shadow: 0 0 0 3px rgba(141, 203, 44, 0.2);
   }
 
@@ -112,6 +112,10 @@
 
     &--duplicate {
       @apply text-amber-600;
+    }
+
+    &--renamed {
+      color: #72a322;
     }
   }
 

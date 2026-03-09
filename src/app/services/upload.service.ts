@@ -116,13 +116,12 @@ export class UploadService {
     this._files.update((files) =>
       files.map((f) => {
         if (f.id !== id) return f;
-        const status = f.status === 'duplicate' || f.isDuplicate ? 'renamed' : f.status;
         return {
           ...f,
           currentName: newName,
           isRenaming: false,
           renameError: undefined,
-          status: status === 'pending' ? 'renamed' : status,
+          status: (f.isDuplicate || f.status === 'duplicate' || f.status === 'pending') ? 'renamed' : f.status,
         };
       }),
     );
@@ -258,13 +257,6 @@ export class UploadService {
 
     uppy.on('upload-error', (_file, error) => {
       console.error('Upload error:', error);
-    });
-
-    uppy.on('error', (error) => {
-      this._errorMessages.update((msgs) => [
-        ...msgs,
-        error?.message ?? 'Upload failed. Is the proxy server running?',
-      ]);
     });
 
     uppy.on('error', (error) => {

@@ -43,7 +43,7 @@
   <div class="file-card__footer">
     <!-- Name row + chevron -->
     <div class="file-card__name-row">
-      <span class="file-card__filename" [class.file-card__filename--duplicate]="file().isDuplicate">
+      <span class="file-card__filename" [class.file-card__filename--duplicate]="file().isDuplicate" [class.file-card__filename--renamed]="file().status === 'renamed'">
         {{ file().currentName }}.{{ file().extension }}
       </span>
       @if (file().status === 'renamed') {

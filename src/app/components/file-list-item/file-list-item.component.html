@@ -1,16 +1,4 @@
 <div class="file-list-item" [ngClass]="rowClasses()">
-  <!-- Duplicate banner — always rendered to keep card heights consistent -->
-  <div
-    class="file-list-item__duplicate-bar"
-    [class.file-list-item__duplicate-bar--active]="file().isDuplicate && !file().isRenaming"
-    (click)="file().isDuplicate && !file().isRenaming ? onStartRename() : null"
-  >
-    @if (file().isDuplicate && !file().isRenaming) {
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Duplicate &mdash; click to rename
-    }
-  </div>
-
   <div class="file-list-item__row">
     <!-- Thumbnail -->
     <div class="file-list-item__thumb">
@@ -39,13 +27,19 @@
         />
       } @else {
         <div class="file-list-item__name-row">
-          <span class="file-list-item__filename" [class.file-list-item__filename--duplicate]="file().isDuplicate">
+          <span class="file-list-item__filename" [class.file-list-item__filename--duplicate]="file().isDuplicate" [class.file-list-item__filename--renamed]="file().status === 'renamed'">
             {{ file().currentName }}.{{ file().extension }}
           </span>
+          @if (file().isDuplicate) {
+            <button class="file-list-item__badge file-list-item__badge--duplicate" (click)="onStartRename()" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Duplicate
+            </button>
+          }
           @if (file().status === 'renamed') {
             <span class="file-list-item__badge file-list-item__badge--renamed">renamed</span>
           }
-          @if (file().status === 'pending' || file().status === 'duplicate') {
+          @if (!file().isDuplicate && file().status === 'pending') {
             <span class="file-list-item__badge file-list-item__badge--pending">pending</span>
           }
         </div>
