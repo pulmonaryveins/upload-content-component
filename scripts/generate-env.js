@@ -51,6 +51,16 @@ export const environment = {
 };
 `;
 
-const outPath = path.join(__dirname, '..', 'src', 'environments', 'environment.prod.ts');
-fs.writeFileSync(outPath, content, 'utf8');
-console.log('[generate-env] Wrote', outPath);
+const envDir = path.join(__dirname, '..', 'src', 'environments');
+
+const prodPath = path.join(envDir, 'environment.prod.ts');
+fs.writeFileSync(prodPath, content, 'utf8');
+console.log('[generate-env] Wrote', prodPath);
+
+// Angular's fileReplacements requires environment.ts to exist on disk
+// even though it gets swapped with environment.prod.ts during the build.
+const basePath = path.join(envDir, 'environment.ts');
+if (!fs.existsSync(basePath)) {
+  fs.writeFileSync(basePath, content, 'utf8');
+  console.log('[generate-env] Wrote', basePath);
+}
