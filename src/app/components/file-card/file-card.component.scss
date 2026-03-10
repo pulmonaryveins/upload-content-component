@@ -91,6 +91,9 @@
     display: block;
     pointer-events: none;
     z-index: 10;
+    // rx/ry are 0 on the SVG rects — CSS overflow: hidden + border-radius clips the
+    // corners cleanly, avoiding the distortion that occurred with non-zero rx/ry values
+    // under preserveAspectRatio="none".
   }
 
   &__border-progress-fill {
