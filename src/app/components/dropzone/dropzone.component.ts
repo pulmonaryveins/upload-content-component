@@ -9,8 +9,10 @@ import {
 } from '@angular/core';
 import { openGoogleDrivePicker } from '../../utils/google-drive.utils';
 import { openDropboxChooser } from '../../utils/dropbox.utils';
+import { openFacebookPicker } from '../../utils/facebook.utils';
 import { GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
 import { DROPBOX_APP_KEY, DROPBOX_ALLOWED_EXTENSIONS } from '../../constants/dropbox.constants';
+import { FACEBOOK_APP_ID, FACEBOOK_API_VERSION } from '../../constants/facebook.constants';
 import { ALLOWED_MIME_TYPES } from '../../constants/upload.constants';
 
 export type DropzoneTab = 'computer' | 'providers';
@@ -42,6 +44,8 @@ export class DropzoneComponent {
   readonly driveError = signal('');
   readonly isDropboxLoading = signal(false);
   readonly dropboxError = signal('');
+  readonly isFacebookLoading = signal(false);
+  readonly facebookError = signal('');
 
   // ── Provider registry ────────────────────────────────────────────────────
   // To add a new provider: append an entry here and add its @case in the template.
@@ -62,6 +66,14 @@ export class DropzoneComponent {
       loading: this.isDropboxLoading,
       error: this.dropboxError,
     },
+    {
+      id: 'facebook',
+      label: 'Facebook',
+      sub: 'Import your photos & videos',
+      open: () => this.openFacebookPicker(),
+      loading: this.isFacebookLoading,
+      error: this.facebookError,
+    },
   ];
 
   private _dragCounter = 0;
@@ -70,6 +82,7 @@ export class DropzoneComponent {
     this.activeTab.set(tab);
     this.driveError.set('');
     this.dropboxError.set('');
+    this.facebookError.set('');
   }
 
   onDragEnter(event: DragEvent): void {
@@ -163,6 +176,25 @@ export class DropzoneComponent {
       );
     } finally {
       this.isDropboxLoading.set(false);
+    }
+  }
+
+  // ── Facebook ──────────────────────────────────────────────────────────────
+
+  async openFacebookPicker(): Promise<void> {
+    this.facebookError.set('');
+    this.isFacebookLoading.set(true);
+    try {
+      const files = await openFacebookPicker(FACEBOOK_APP_ID, FACEBOOK_API_VERSION);
+      if (files.length > 0) {
+        this.filesDropped.emit(files);
+      }
+    } catch (err) {
+      this.facebookError.set(
+        err instanceof Error ? err.message : 'Failed to connect to Facebook',
+      );
+    } finally {
+      this.isFacebookLoading.set(false);
     }
   }
 }

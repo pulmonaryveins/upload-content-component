@@ -147,5 +147,43 @@ app.get('/api/dropbox/download', async (req, res) => {
   }
 });
 
+// ── GET /api/facebook/download ──────────────────────────────────────────────
+// Proxies a Facebook CDN URL server-side.
+// Graph API photo/video source URLs are pre-signed CDN links; proxying avoids
+// CORS restrictions when downloading them directly from the browser.
+app.get('/api/facebook/download', async (req, res) => {
+  const { url, name } = req.query;
+
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Missing required query param: url' });
+  }
+
+  try {
+    const fbRes = await fetch(url);
+
+    if (!fbRes.ok) {
+      return res.status(fbRes.status).json({ error: `Facebook CDN returned HTTP ${fbRes.status}` });
+    }
+
+    const contentType = fbRes.headers.get('content-type') ?? 'application/octet-stream';
+    res.setHeader('Content-Type', contentType);
+    if (name && typeof name === 'string') {
+      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(name)}"`);
+    }
+
+    const reader = fbRes.body.getReader();
+    const pump = async () => {
+      const { done, value } = await reader.read();
+      if (done) { res.end(); return; }
+      res.write(Buffer.from(value));
+      return pump();
+    };
+    await pump();
+  } catch (err) {
+    console.error('Facebook download error:', err);
+    res.status(502).json({ error: 'Failed to fetch file from Facebook' });
+  }
+});
+
 const PORT = process.env.PORT ?? 3000;
 app.listen(PORT, () => console.log(`Proxy server listening on http://localhost:${PORT}`));
