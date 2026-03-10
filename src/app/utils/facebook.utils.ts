@@ -55,10 +55,8 @@ function fbApi<T>(path: string): Promise<T> {
 // ── Download ──────────────────────────────────────────────────────────────────
 
 async function downloadFacebookFile(url: string, fileName: string): Promise<File> {
-  // Facebook CDN URLs are pre-signed; the server proxy fetches them directly
-  // without needing an Authorization header (similar to Dropbox direct links).
-  const params = new URLSearchParams({ url, name: fileName });
-  const res = await fetch(`/api/facebook/download?${params}`);
+  // Facebook CDN URLs are pre-signed — fetch them directly from the browser.
+  const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Could not download "${fileName}" (HTTP ${res.status})`);
   }

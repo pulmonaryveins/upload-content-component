@@ -21,8 +21,7 @@ async function loadDropboxChooserSdk(appKey: string): Promise<void> {
 }
 
 async function downloadDropboxFile(url: string, fileName: string): Promise<File> {
-  const params = new URLSearchParams({ url });
-  const res = await fetch(`/api/dropbox/download?${params}`);
+  const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Could not download "${fileName}" (HTTP ${res.status})`);
   }

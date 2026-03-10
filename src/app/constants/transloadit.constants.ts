@@ -1,3 +1,4 @@
-// Transloadit credentials are no longer held in the browser.
-// They are stored in server/.env and returned as signed, time-limited params
-// by the backend endpoint GET /api/transloadit/params.
+import { environment } from '../../environments/environment';
+
+export const TRANSLOADIT_KEY = environment.transloadit.key;
+export const TRANSLOADIT_TEMPLATE_ID = environment.transloadit.templateId;

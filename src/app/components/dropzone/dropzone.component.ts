@@ -10,7 +10,7 @@ import {
 import { openGoogleDrivePicker } from '../../utils/google-drive.utils';
 import { openDropboxChooser } from '../../utils/dropbox.utils';
 import { openFacebookPicker } from '../../utils/facebook.utils';
-import { GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
+import { GDRIVE_API_KEY, GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-drive.constants';
 import { DROPBOX_APP_KEY, DROPBOX_ALLOWED_EXTENSIONS } from '../../constants/dropbox.constants';
 import { FACEBOOK_APP_ID, FACEBOOK_API_VERSION } from '../../constants/facebook.constants';
 import { ALLOWED_MIME_TYPES } from '../../constants/upload.constants';
@@ -137,13 +137,8 @@ export class DropzoneComponent {
     this.driveError.set('');
     this.isDriveLoading.set(true);
     try {
-      // Fetch the API key from the proxy server so it is never statically bundled
-      const configRes = await fetch('/api/google-drive/config');
-      if (!configRes.ok) throw new Error('Could not fetch Drive configuration from proxy server');
-      const { apiKey } = await configRes.json();
-
       const files = await openGoogleDrivePicker(
-        apiKey,
+        GDRIVE_API_KEY,
         GDRIVE_CLIENT_ID,
         GDRIVE_PROJECT_NUMBER,
         ALLOWED_MIME_TYPES,

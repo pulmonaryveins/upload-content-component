@@ -7,6 +7,7 @@ import { LibraryItem } from '../types/library.types';
 import { buildUploadFile } from '../utils/file.utils';
 import { suggestRename } from '../utils/rename.utils';
 import { LibraryService } from './library.service';
+import { TRANSLOADIT_KEY, TRANSLOADIT_TEMPLATE_ID } from '../constants/transloadit.constants';
 import { IMAGE_MIME_TYPES, MAX_FILE_COUNT } from '../constants/upload.constants';
 
 @Injectable({ providedIn: 'root' })
@@ -177,14 +178,19 @@ export class UploadService {
     const uppy = new Uppy({ autoProceed: false });
 
     uppy.use(Transloadit, {
-      assemblyOptions: async () => {
-        const res = await fetch('/api/transloadit/params');
-        if (!res.ok) throw new Error(`Upload server error: HTTP ${res.status}`);
-        const { params, signature } = await res.json();
-        // params is the exact JSON string that was HMAC-signed on the server.
-        // Parsing and passing as object is safe: JSON.stringify(JSON.parse(s)) === s
-        // for simple objects, so Transloadit’s signature check will pass.
-        return { params: JSON.parse(params), signature };
+      assemblyOptions: () => {
+        // Build a 30-minute expiry timestamp in Transloadit's required format.
+        const d = new Date(Date.now() + 30 * 60 * 1000);
+        const pad = (n: number) => String(n).padStart(2, '0');
+        const expires = `${d.getUTCFullYear()}/${pad(d.getUTCMonth() + 1)}/${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}+00:00`;
+        return {
+          params: {
+            auth: { key: TRANSLOADIT_KEY, expires },
+            template_id: TRANSLOADIT_TEMPLATE_ID,
+          },
+          // No HMAC signature — disable "Require Auth Signature" in your
+          // Transloadit template settings for this to be accepted.
+        };
       },
       waitForEncoding: true,
     });
