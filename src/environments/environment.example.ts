@@ -17,6 +17,6 @@
   },
   box: {
     clientId: 'YOUR_BOX_CLIENT_ID',
-    clientSecret: 'axdfr0ncQHiYVs3rPvQtiiSwQ1PZHYRG',
+    clientSecret: 'YOUR_BOX_CLIENT_SECRET',
   },
 };
