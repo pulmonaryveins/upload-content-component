@@ -9,8 +9,10 @@
  *   GOOGLE_CLIENT_ID
  *   GOOGLE_PROJECT_NUMBER
  *   DROPBOX_APP_KEY
- *   FACEBOOK_APP_ID
  *   BOX_CLIENT_ID
+ *
+ * Optional:
+ *   FACEBOOK_APP_ID  (leave unset if not configured yet)
  */
 const fs = require('fs');
 const path = require('path');
@@ -40,7 +42,7 @@ export const environment = {
     appKey: '${required('DROPBOX_APP_KEY')}',
   },
   facebook: {
-    appId: '${required('FACEBOOK_APP_ID')}',
+    appId: '${process.env['FACEBOOK_APP_ID'] || ''}',
   },
   box: {
     clientId: '${required('BOX_CLIENT_ID')}',
