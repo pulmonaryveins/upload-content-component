@@ -12,4 +12,11 @@
   dropbox: {
     appKey: 'YOUR_DROPBOX_APP_KEY',
   },
+  facebook: {
+    appId: 'YOUR_FACEBOOK_APP_ID',
+  },
+  box: {
+    clientId: 'YOUR_BOX_CLIENT_ID',
+    clientSecret: 'axdfr0ncQHiYVs3rPvQtiiSwQ1PZHYRG',
+  },
 };
