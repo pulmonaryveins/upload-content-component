@@ -18,6 +18,7 @@
       @if (file().isRenaming) {
         <input
           class="file-list-item__rename-inline"
+          [class.file-list-item__rename-inline--error]="renameError()"
           type="text"
           [value]="renameValue()"
           (input)="renameValue.set($any($event.target).value)"
@@ -25,6 +26,9 @@
           placeholder="Enter new filename"
           autofocus
         />
+        @if (renameError()) {
+          <p class="file-list-item__rename-error">{{ renameError() }}</p>
+        }
       } @else {
         <div class="file-list-item__name-row">
           <span class="file-list-item__filename" [class.file-list-item__filename--duplicate]="file().isDuplicate" [class.file-list-item__filename--renamed]="file().status === 'renamed'">

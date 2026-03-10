@@ -10,6 +10,7 @@ import {
 import { NgClass } from '@angular/common';
 import { UploadFile } from '../../types/upload.types';
 import { formatBytes, getMediaLabel } from '../../utils/file.utils';
+import { validateFilename } from '../../utils/rename.utils';
 
 @Component({
   selector: 'app-file-list-item',
@@ -29,6 +30,7 @@ export class FileListItemComponent {
   cancelRename = output<string>();
 
   readonly renameValue = signal('');
+  readonly renameError = signal('');
 
   readonly isImage = computed(() => this.file().mimeType.startsWith('image/'));
   readonly mediaLabel = computed(() => getMediaLabel(this.file().mimeType));
@@ -59,12 +61,17 @@ export class FileListItemComponent {
 
   onSaveRename(): void {
     const name = this.renameValue().trim();
-    if (name) {
-      this.saveRename.emit({ id: this.file().id, name });
+    const error = validateFilename(name, this.file().extension);
+    if (error) {
+      this.renameError.set(error);
+      return;
     }
+    this.renameError.set('');
+    this.saveRename.emit({ id: this.file().id, name });
   }
 
   onCancelRename(): void {
+    this.renameError.set('');
     this.cancelRename.emit(this.file().id);
   }
 

@@ -128,7 +128,7 @@ export class UploadModalComponent {
   onSaveRenamePanel(): void {
     const file = this.activeRenameFile();
     if (!file) return;
-    const error = validateFilename(this.renameInputValue());
+    const error = validateFilename(this.renameInputValue(), file.extension);
     if (error) {
       this.renameInputError.set(error);
       return;

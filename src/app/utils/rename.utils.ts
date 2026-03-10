@@ -1,4 +1,4 @@
-import { RENAME_INVALID_CHAR_REGEX } from '../constants/upload.constants';
+import { RENAME_INVALID_CHAR_REGEX, MAX_FILENAME_LENGTH } from '../constants/upload.constants';
 
 /**
  * Suggests the lowest available rename for `name` given a set of taken names.
@@ -15,14 +15,20 @@ export function suggestRename(name: string, takenNames: string[]): string {
 
 /**
  * Validates a filename stem (no extension) typed by the user during rename.
+ * Pass `extension` so the total length (stem + "." + ext) can be checked against
+ * the 254-character limit (rejects filenames ≥ 255 characters).
  * Returns an error message string or null if valid.
  */
-export function validateFilename(name: string): string | null {
+export function validateFilename(name: string, extension?: string): string | null {
   if (!name || name.trim().length === 0) {
     return 'Filename cannot be empty';
   }
   if (RENAME_INVALID_CHAR_REGEX.test(name)) {
     return 'Filename contains invalid characters';
+  }
+  const totalLength = extension ? name.length + 1 + extension.length : name.length;
+  if (totalLength > MAX_FILENAME_LENGTH) {
+    return `Filename is too long — maximum ${MAX_FILENAME_LENGTH} characters (including extension).`;
   }
   return null;
 }
