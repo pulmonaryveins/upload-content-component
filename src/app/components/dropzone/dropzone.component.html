@@ -1,4 +1,4 @@
-﻿<!-- Tab bar -->
+<!-- Tab bar -->
 <div class="dropzone-tabs">
     <button
       class="dropzone-tabs__tab"
@@ -11,21 +11,12 @@
     </button>
     <button
       class="dropzone-tabs__tab"
-      [class.dropzone-tabs__tab--active]="activeTab() === 'drive'"
-      (click)="setTab('drive')"
+      [class.dropzone-tabs__tab--active]="activeTab() === 'providers'"
+      (click)="setTab('providers')"
       type="button"
     >
-      <i class="fa-brands fa-google-drive"></i>
-      Google Drive
-    </button>
-    <button
-      class="dropzone-tabs__tab"
-      [class.dropzone-tabs__tab--active]="activeTab() === 'dropbox'"
-      (click)="setTab('dropbox')"
-      type="button"
-    >
-      <i class="fa-brands fa-dropbox"></i>
-      Dropbox
+      <i class="fa-solid fa-cloud"></i>
+      Providers
     </button>
   </div>
 
@@ -61,84 +52,61 @@
     </div>
   }
 
-  <!-- Google Drive tab -->
-  @if (activeTab() === 'drive') {
-    <div class="dropzone dropzone--drive">
-      <div class="dropzone__drive-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.3 78" width="58" height="52">
-          <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H.01c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
-          <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L.98 49.55c-.8 1.4-1.2 2.95-1.2 4.5h27.49z" fill="#00ac47"/>
-          <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 10.9z" fill="#ea4335"/>
-          <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
-          <path d="M59.8 57.05H27.49L13.74 80.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2z" fill="#2684fc"/>
-          <path d="M73.4 26.5l-12.8-22.2c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 27.95h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
-        </svg>
-      </div>
-      <p class="dropzone__headline">Google Drive</p>
-      <p class="dropzone__sub">Browse and import files from your Drive</p>
-      <button
-        class="dropzone__drive-btn"
-        (click)="openDrivePicker()"
-        [disabled]="isDriveLoading()"
-        type="button"
-      >
-        @if (isDriveLoading()) {
-          <svg class="dropzone__drive-spinner" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          Connecting&hellip;
-        } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 87.3 78"><path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H.01c0 1.55.4 3.1 1.2 4.5z" fill="#fff" opacity=".95"/><path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L.98 49.55c-.8 1.4-1.2 2.95-1.2 4.5h27.49z" fill="#fff" opacity=".95"/><path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 10.9z" fill="#fff" opacity=".95"/><path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#fff" opacity=".75"/><path d="M59.8 57.05H27.49L13.74 80.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2z" fill="#fff" opacity=".95"/><path d="M73.4 26.5l-12.8-22.2c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 27.95h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#fff" opacity=".85"/></svg>
-          Open Google Drive
+  <!-- Providers tab -->
+  @if (activeTab() === 'providers') {
+    <div class="dropzone dropzone--providers">
+      <div class="dropzone__providers-grid">
+        @for (provider of providers; track provider.id) {
+          <div class="dropzone__provider-card-wrapper">
+            <button
+              class="dropzone__provider-card"
+              [class.dropzone__provider-card--loading]="provider.loading()"
+              (click)="provider.open()"
+              [disabled]="provider.loading()"
+              type="button"
+              [attr.aria-label]="'Open ' + provider.label"
+            >
+              <div class="dropzone__provider-logo">
+                @if (provider.loading()) {
+                  <svg class="dropzone__drive-spinner" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                } @else {
+                  @switch (provider.id) {
+                    @case ('drive') {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.3 78" width="42" height="38">
+                        <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H.01c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+                        <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L.98 49.55c-.8 1.4-1.2 2.95-1.2 4.5h27.49z" fill="#00ac47"/>
+                        <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 10.9z" fill="#ea4335"/>
+                        <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+                        <path d="M59.8 57.05H27.49L13.74 80.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2z" fill="#2684fc"/>
+                        <path d="M73.4 26.5l-12.8-22.2c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 27.95h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+                      </svg>
+                    }
+                    @case ('dropbox') {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528 528" width="38" height="38" fill="none">
+                        <path d="M132 16L0 105.6 132 195.2 264 105.6 132 16z" fill="#0061FF"/>
+                        <path d="M396 16L264 105.6 396 195.2 528 105.6 396 16z" fill="#0061FF"/>
+                        <path d="M0 284.8L132 374.4 264 284.8 132 195.2 0 284.8z" fill="#0061FF"/>
+                        <path d="M528 284.8L396 195.2 264 284.8 396 374.4 528 284.8z" fill="#0061FF"/>
+                        <path d="M132 398.4L264 308.8 396 398.4 264 488 132 398.4z" fill="#0061FF"/>
+                      </svg>
+                    }
+                  }
+                }
+              </div>
+              <span class="dropzone__provider-name">
+                @if (provider.loading()) { Connecting&hellip; } @else { {{ provider.label }} }
+              </span>
+              <span class="dropzone__provider-sub">{{ provider.sub }}</span>
+            </button>
+            @if (provider.error()) {
+              <p class="dropzone__drive-error dropzone__provider-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                {{ provider.error() }}
+              </p>
+            }
+          </div>
         }
-      </button>
-      @if (driveError()) {
-        <p class="dropzone__drive-error">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          {{ driveError() }}
-        </p>
-      }
-    </div>
-  }
-
-  <!-- Dropbox tab -->
-  @if (activeTab() === 'dropbox') {
-    <div class="dropzone dropzone--dropbox">
-      <div class="dropzone__drive-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528 528" width="52" height="52" fill="none">
-          <path d="M132 16L0 105.6 132 195.2 264 105.6 132 16z" fill="#0061FF"/>
-          <path d="M396 16L264 105.6 396 195.2 528 105.6 396 16z" fill="#0061FF"/>
-          <path d="M0 284.8L132 374.4 264 284.8 132 195.2 0 284.8z" fill="#0061FF"/>
-          <path d="M528 284.8L396 195.2 264 284.8 396 374.4 528 284.8z" fill="#0061FF"/>
-          <path d="M132 398.4L264 308.8 396 398.4 264 488 132 398.4z" fill="#0061FF"/>
-        </svg>
       </div>
-      <p class="dropzone__headline">Dropbox</p>
-      <p class="dropzone__sub">Browse and import files from your Dropbox</p>
-      <button
-        class="dropzone__dropbox-btn"
-        (click)="openDropboxPicker()"
-        [disabled]="isDropboxLoading()"
-        type="button"
-      >
-        @if (isDropboxLoading()) {
-          <svg class="dropzone__drive-spinner" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          Connecting&hellip;
-        } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 528 528" fill="none">
-            <path d="M132 16L0 105.6 132 195.2 264 105.6 132 16z" fill="#fff"/>
-            <path d="M396 16L264 105.6 396 195.2 528 105.6 396 16z" fill="#fff"/>
-            <path d="M0 284.8L132 374.4 264 284.8 132 195.2 0 284.8z" fill="#fff"/>
-            <path d="M528 284.8L396 195.2 264 284.8 396 374.4 528 284.8z" fill="#fff"/>
-            <path d="M132 398.4L264 308.8 396 398.4 264 488 132 398.4z" fill="#fff"/>
-          </svg>
-          Open Dropbox
-        }
-      </button>
-      @if (dropboxError()) {
-        <p class="dropzone__drive-error">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          {{ dropboxError() }}
-        </p>
-      }
     </div>
   }
 

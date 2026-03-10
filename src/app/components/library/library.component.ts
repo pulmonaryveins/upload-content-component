@@ -37,6 +37,7 @@ export class LibraryComponent {
   readonly isBulkSelectMode = signal(false);
   readonly selectedIds = signal<string[]>([]);
   readonly pageSize = signal(36);
+  readonly failedMediaIds = signal<Set<string>>(new Set());
 
   // ── Derived stats ──────────────────────────────────────────────────────────
   readonly totalCount = computed(() => this.items().length);
@@ -75,6 +76,14 @@ export class LibraryComponent {
 
   isImage(item: LibraryItem): boolean {
     return item.type === 'image';
+  }
+
+  isMediaFailed(id: string): boolean {
+    return this.failedMediaIds().has(id);
+  }
+
+  onMediaError(id: string): void {
+    this.failedMediaIds.update((s) => new Set([...s, id]));
   }
 
   onUploadClick(): void {

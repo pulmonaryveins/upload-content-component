@@ -139,14 +139,23 @@
           (click)="isBulkSelectMode() ? toggleSelect(item.id) : null"
         >
           <div class="library__card-preview">
-            @if (isImage(item)) {
-              <img [src]="item.url" [alt]="item.name" class="library__card-media" loading="lazy" />
-            } @else {
-              <video [src]="item.url" autoplay muted loop playsinline class="library__card-media"></video>
+            @let mediaBroken = isMediaFailed(item.id);
+            @if (isImage(item) && !mediaBroken) {
+              <img [src]="item.url" [alt]="item.name" class="library__card-media" loading="lazy" (error)="onMediaError(item.id)" />
+            } @else if (isImage(item)) {
+              <div class="library__media-placeholder library__media-placeholder--image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+            } @else if (!mediaBroken) {
+              <video [src]="item.url" autoplay muted loop playsinline class="library__card-media" (error)="onMediaError(item.id)"></video>
               <div class="library__card-play">
                 <span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 </span>
+              </div>
+            } @else {
+              <div class="library__media-placeholder library__media-placeholder--video">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
               </div>
             }
             <span class="library__card-badge library__card-badge--{{ item.type }}">{{ item.type.toUpperCase() }}</span>

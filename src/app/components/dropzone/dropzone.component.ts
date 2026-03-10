@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  Signal,
   ViewEncapsulation,
   output,
   signal,
@@ -12,7 +13,16 @@ import { GDRIVE_CLIENT_ID, GDRIVE_PROJECT_NUMBER } from '../../constants/google-
 import { DROPBOX_APP_KEY, DROPBOX_ALLOWED_EXTENSIONS } from '../../constants/dropbox.constants';
 import { ALLOWED_MIME_TYPES } from '../../constants/upload.constants';
 
-export type DropzoneTab = 'computer' | 'drive' | 'dropbox';
+export type DropzoneTab = 'computer' | 'providers';
+
+interface CloudProvider {
+  id: string;
+  label: string;
+  sub: string;
+  open: () => void;
+  loading: Signal<boolean>;
+  error: Signal<string>;
+}
 
 @Component({
   selector: 'app-dropzone',
@@ -32,6 +42,27 @@ export class DropzoneComponent {
   readonly driveError = signal('');
   readonly isDropboxLoading = signal(false);
   readonly dropboxError = signal('');
+
+  // ── Provider registry ────────────────────────────────────────────────────
+  // To add a new provider: append an entry here and add its @case in the template.
+  readonly providers: CloudProvider[] = [
+    {
+      id: 'drive',
+      label: 'Google Drive',
+      sub: 'Import from your Drive',
+      open: () => this.openDrivePicker(),
+      loading: this.isDriveLoading,
+      error: this.driveError,
+    },
+    {
+      id: 'dropbox',
+      label: 'Dropbox',
+      sub: 'Import from your Dropbox',
+      open: () => this.openDropboxPicker(),
+      loading: this.isDropboxLoading,
+      error: this.dropboxError,
+    },
+  ];
 
   private _dragCounter = 0;
 

@@ -158,7 +158,13 @@ export class UploadService {
 
   reset(): void {
     this._files().forEach((f) => {
-      if (f.previewUrl) URL.revokeObjectURL(f.previewUrl);
+      // Only revoke blob URLs for files that were NOT uploaded.
+      // Uploaded files may have their blob URL stored as the library item's url
+      // (when Transloadit does not return a CDN URL); revoking it would break
+      // the thumbnail immediately after the modal closes.
+      if (f.previewUrl && f.status !== 'uploaded') {
+        URL.revokeObjectURL(f.previewUrl);
+      }
     });
     this._files.set([]);
     this._errorMessages.set([]);
