@@ -53,14 +53,14 @@ export const environment = {
 
 const envDir = path.join(__dirname, '..', 'src', 'environments');
 
+// Write environment.prod.ts (used by Angular's fileReplacements in production config).
 const prodPath = path.join(envDir, 'environment.prod.ts');
 fs.writeFileSync(prodPath, content, 'utf8');
 console.log('[generate-env] Wrote', prodPath);
 
-// Angular's fileReplacements requires environment.ts to exist on disk
-// even though it gets swapped with environment.prod.ts during the build.
+// Also write environment.ts — Angular's esbuild builder must be able to resolve
+// the import path before fileReplacements can alias it to environment.prod.ts.
+// This file is gitignored so it won't exist on a fresh Vercel clone.
 const basePath = path.join(envDir, 'environment.ts');
-if (!fs.existsSync(basePath)) {
-  fs.writeFileSync(basePath, content, 'utf8');
-  console.log('[generate-env] Wrote', basePath);
-}
+fs.writeFileSync(basePath, content, 'utf8');
+console.log('[generate-env] Wrote', basePath);
