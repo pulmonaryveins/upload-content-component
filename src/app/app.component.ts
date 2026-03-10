@@ -25,6 +25,5 @@ export class AppComponent {
 
   onUploadEvent(event: UploadEvent): void {
     this.uploadLog.update((log) => [event, ...log]);
-    console.log('[Upload Event]', event.status, event.file.currentName, event.progress ?? '');
   }
 }
