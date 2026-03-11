@@ -103,13 +103,13 @@
 
   &__stat-title {
     font-size: 0.9375rem;
-    font-weight: 700;
+    font-weight: 600;
     color: #111827;
   }
 
   &__stat-num {
     font-size: 1.625rem;
-    font-weight: 800;
+    font-weight: 600;
     color: #111827;
     line-height: 1;
     flex-shrink: 0;
@@ -268,8 +268,8 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
-    gap: 0.875rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.125rem;
   }
 
   &__card {
@@ -364,12 +364,12 @@
   }
 
   &__card-info {
-    padding: 0.5rem 0.625rem 0.625rem;
+    padding: 0.625rem 0.75rem 0.75rem;
   }
 
   &__card-name {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     color: #374151;
     overflow: hidden;
@@ -379,9 +379,9 @@
 
   &__card-size {
     display: block;
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: #9ca3af;
-    margin-top: 0.125rem;
+    margin-top: 0.2rem;
   }
 
   // ── List view ─────────────────────────────────────────────────────────────
