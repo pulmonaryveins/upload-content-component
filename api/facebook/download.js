@@ -11,7 +11,7 @@
 const ALLOWED_CDN_SUFFIX = '.fbcdn.net';
 const MAX_FILE_BYTES = 100 * 1024 * 1024; // 100 MB guard
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -60,4 +60,4 @@ export default async function handler(req, res) {
   res.setHeader('Content-Length', buffer.byteLength);
   res.setHeader('Cache-Control', 'private, max-age=60');
   res.send(Buffer.from(buffer));
-}
+};
