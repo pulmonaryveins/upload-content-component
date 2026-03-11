@@ -178,6 +178,7 @@ export class UploadService {
     const uppy = new Uppy({ autoProceed: false });
 
     uppy.use(Transloadit, {
+      service: 'https://api2-ap-southeast-1.transloadit.com',
       assemblyOptions: () => {
         // Build a 30-minute expiry timestamp in Transloadit's required format.
         const d = new Date(Date.now() + 30 * 60 * 1000);
@@ -192,7 +193,7 @@ export class UploadService {
           // Transloadit template settings for this to be accepted.
         };
       },
-      waitForEncoding: true,
+      waitForEncoding: false,
     });
 
     // Add files to Uppy and build a stable id → UploadFile map
