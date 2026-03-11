@@ -55,8 +55,10 @@ function fbApi<T>(path: string): Promise<T> {
 // ── Download ──────────────────────────────────────────────────────────────────
 
 async function downloadFacebookFile(url: string, fileName: string): Promise<File> {
-  // Facebook CDN URLs are pre-signed — fetch them directly from the browser.
-  const res = await fetch(url);
+  // Facebook CDN (*.fbcdn.net) blocks cross-origin fetch() — route through
+  // the server-side proxy at /api/facebook/download to bypass CORS.
+  const proxyUrl = `/api/facebook/download?url=${encodeURIComponent(url)}`;
+  const res = await fetch(proxyUrl);
   if (!res.ok) {
     throw new Error(`Could not download "${fileName}" (HTTP ${res.status})`);
   }
@@ -89,7 +91,6 @@ interface FbVideo {
  *   - FACEBOOK_APP_ID set in environment.ts
  *   - App domain added to "Valid OAuth Redirect URIs" and "App Domains"
  *   - user_photos + user_videos permissions approved (or in development mode)
- *   - /api/facebook/download proxy running on the server
  */
 export async function openFacebookPicker(appId: string, version: string): Promise<File[]> {
   await loadFacebookSdk(appId, version);
