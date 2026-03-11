@@ -51,10 +51,15 @@
       <div class="file-list-item__meta">
         <span class="file-list-item__type">{{ mediaLabel() }}</span>
         <span class="file-list-item__size">{{ formattedSize() }}</span>
-        @if (file().status === 'uploading') {
-          <span class="file-list-item__progress">{{ file().progress }}%</span>
-        }
       </div>
+      @if (file().status === 'uploading') {
+        <div class="file-list-item__upload-progress">
+          <div class="file-list-item__upload-bar-track">
+            <div class="file-list-item__upload-bar-fill" [style.width.%]="file().progress"></div>
+          </div>
+          <span class="file-list-item__upload-pct">{{ file().progress }}%</span>
+        </div>
+      }
     </div>
 
     <!-- Actions -->
@@ -84,10 +89,4 @@
     </div>
   </div>
 
-  <!-- Progress bar -->
-  @if (file().status === 'uploading') {
-    <div class="file-list-item__progress-bar-wrap">
-      <div class="file-list-item__progress-bar" [style.width.%]="file().progress"></div>
-    </div>
-  }
 </div>

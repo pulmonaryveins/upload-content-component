@@ -28,8 +28,14 @@
     background: #f5fce8;
   }
 
+  &--uploading {
+    border: 1px solid #b3e349;
+    background: #fafffe;
+  }
+
   &--uploaded {
-    border: 1px solid #72a322;
+    border: 1px solid #b2e34988;
+    background: #e5ffa41a;
     opacity: 0.8;
   }
 
@@ -153,8 +159,7 @@
     }
   }
 
-  &__size,
-  &__progress {
+  &__size {
     @apply text-xs text-gray-400;
   }
 
@@ -217,17 +222,62 @@
     }
   }
 
-  &__progress-bar-wrap {
-    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100;
+  // ── Upload progress ───────────────────────────────────────────────────────
+  &__upload-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.125rem;
   }
 
-  &__progress-bar {
-    @apply h-full transition-all duration-300;
-    background: #8dcb2c;
+  &__upload-bar-track {
+    flex: 1;
+    height: 5px;
+    background: #e9ecef;
+    border-radius: 999px;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  &__upload-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8dcb2c, #a8e044);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 100%
+      );
+      animation: bar-shimmer 1.4s ease infinite;
+    }
+  }
+
+  &__upload-pct {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #72a322;
+    flex-shrink: 0;
+    min-width: 2rem;
+    text-align: right;
+    letter-spacing: 0.01em;
   }
 }
 
 @keyframes list-item-in {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bar-shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
 }
