@@ -193,7 +193,7 @@ export class UploadService {
           // Transloadit template settings for this to be accepted.
         };
       },
-      waitForEncoding: false,
+      waitForEncoding: true,
     });
 
     // Add files to Uppy and build a stable id → UploadFile map
