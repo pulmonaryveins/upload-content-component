@@ -10,6 +10,7 @@
  *   GOOGLE_PROJECT_NUMBER
  *   DROPBOX_APP_KEY
  *   BOX_CLIENT_ID
+ *   BOX_CLIENT_SECRET
  *
  * Optional:
  *   FACEBOOK_APP_ID  (leave unset if not configured yet)
@@ -46,7 +47,7 @@ export const environment = {
   },
   box: {
     clientId: '${required('BOX_CLIENT_ID')}',
-    clientSecret: '',
+    clientSecret: '${required('BOX_CLIENT_SECRET')}',
   },
 };
 `;
