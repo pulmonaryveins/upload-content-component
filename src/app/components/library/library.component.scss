@@ -18,7 +18,7 @@
 
   &__page-title {
     font-size: 1.875rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #8dcb2c;
     letter-spacing: -0.025em;
     line-height: 1;
@@ -36,10 +36,16 @@
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background 0.18s;
+    transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
     box-shadow: 0 1px 3px rgba(141, 203, 44, 0.35);
 
-    &:hover { background: #72a322; }
+    &:hover {
+      background: #72a322;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(141, 203, 44, 0.4);
+    }
+
+    &:active { transform: translateY(0); }
   }
 
   // ── Stats row ─────────────────────────────────────────────────────────────
@@ -60,9 +66,12 @@
     align-items: flex-start;
     gap: 1rem;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.15s;
+    transition: box-shadow 0.2s, transform 0.2s;
 
-    &:hover { box-shadow: 0 3px 10px rgba(0, 0, 0, 0.09); }
+    &:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
+      transform: translateY(-2px);
+    }
   }
 
   &__stat-icon {
@@ -269,13 +278,15 @@
     background: white;
     cursor: pointer;
     border: 1.5px solid transparent;
-    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, border-color 0.15s;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
+
+    &:active { transform: translateY(-1px); }
 
     &--selected {
       border-color: #8dcb2c;
@@ -389,9 +400,15 @@
     background: white;
     border: 1px solid #f3f4f6;
     border-radius: 0.625rem;
-    transition: background 0.15s;
+    transition: background 0.15s, transform 0.18s, box-shadow 0.18s;
 
-    &:hover { background: #fafafa; }
+    &:hover {
+      background: #fafafa;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    &:active { transform: translateY(0); }
   }
 
   &__list-thumb {

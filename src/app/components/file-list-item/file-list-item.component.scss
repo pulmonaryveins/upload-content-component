@@ -3,6 +3,12 @@
   @apply transition-all duration-150 relative overflow-hidden;
   display: flex;
   flex-direction: column;
+  animation: list-item-in 0.18s ease both;
+
+  &:hover:not(.file-list-item--uploading) {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  }
 
   &--duplicate {
     border: 1px solid #fcd34d;
@@ -219,4 +225,9 @@
     @apply h-full transition-all duration-300;
     background: #8dcb2c;
   }
+}
+
+@keyframes list-item-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

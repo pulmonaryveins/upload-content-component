@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  OnDestroy,
   Signal,
   ViewEncapsulation,
   output,
@@ -36,7 +37,7 @@ interface CloudProvider {
   styleUrls: ['./dropzone.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
 })
-export class DropzoneComponent {
+export class DropzoneComponent implements OnDestroy {
   filesDropped = output<File[]>();
 
   readonly fileInputRef = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
@@ -89,6 +90,19 @@ export class DropzoneComponent {
   ];
 
   private _dragCounter = 0;
+  private _errorTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  private _setProviderError(errorSignal: ReturnType<typeof signal<string>>, key: string, msg: string): void {
+    const existing = this._errorTimers.get(key);
+    if (existing) clearTimeout(existing);
+    errorSignal.set(msg);
+    const timer = setTimeout(() => { errorSignal.set(''); this._errorTimers.delete(key); }, 5000);
+    this._errorTimers.set(key, timer);
+  }
+
+  ngOnDestroy(): void {
+    this._errorTimers.forEach(t => clearTimeout(t));
+  }
 
   setTab(tab: DropzoneTab): void {
     this.activeTab.set(tab);
@@ -160,9 +174,7 @@ export class DropzoneComponent {
         this.filesDropped.emit(files);
       }
     } catch (err) {
-      this.driveError.set(
-        err instanceof Error ? err.message : 'Failed to open Google Drive',
-      );
+      this._setProviderError(this.driveError, 'drive', err instanceof Error ? err.message : 'Failed to open Google Drive');
     } finally {
       this.isDriveLoading.set(false);
     }
@@ -179,9 +191,7 @@ export class DropzoneComponent {
         this.filesDropped.emit(files);
       }
     } catch (err) {
-      this.dropboxError.set(
-        err instanceof Error ? err.message : 'Failed to open Dropbox',
-      );
+      this._setProviderError(this.dropboxError, 'dropbox', err instanceof Error ? err.message : 'Failed to open Dropbox');
     } finally {
       this.isDropboxLoading.set(false);
     }
@@ -198,9 +208,7 @@ export class DropzoneComponent {
         this.filesDropped.emit(files);
       }
     } catch (err) {
-      this.boxError.set(
-        err instanceof Error ? err.message : 'Failed to open Box',
-      );
+      this._setProviderError(this.boxError, 'box', err instanceof Error ? err.message : 'Failed to open Box');
     } finally {
       this.isBoxLoading.set(false);
     }
@@ -217,9 +225,7 @@ export class DropzoneComponent {
         this.filesDropped.emit(files);
       }
     } catch (err) {
-      this.facebookError.set(
-        err instanceof Error ? err.message : 'Failed to connect to Facebook',
-      );
+      this._setProviderError(this.facebookError, 'facebook', err instanceof Error ? err.message : 'Failed to connect to Facebook');
     } finally {
       this.isFacebookLoading.set(false);
     }

@@ -1,5 +1,12 @@
 .upload-banner {
   @apply flex items-center justify-between gap-3 rounded-lg px-4 py-3;
+  position: relative;
+  overflow: hidden;
+  animation: banner-in 0.22s ease both;
+
+  &--dismissing {
+    animation: banner-out 0.32s ease forwards;
+  }
 
   &--error {
     @apply bg-red-50 border border-red-200 text-red-700;
@@ -124,9 +131,11 @@
 
   &__btn {
     @apply text-sm font-medium px-3 py-1.5 rounded cursor-pointer transition-colors;
+    transition: background 0.15s, transform 0.15s;
 
     &--outline {
       @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
+      &:hover { transform: translateY(-1px); }
     }
 
     &--solid {
@@ -134,7 +143,38 @@
       color: white;
       border: 0;
 
-      &:hover { background: #72a322; }
+      &:hover {
+        background: #72a322;
+        transform: translateY(-1px);
+      }
+
+      &:active { transform: translateY(0); }
     }
   }
+}
+
+@keyframes banner-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes banner-out {
+  from { opacity: 1; transform: translateY(0);    max-height: 80px;  }
+  to   { opacity: 0; transform: translateY(-8px); max-height: 0; padding-top: 0; padding-bottom: 0; margin: 0; }
+}
+
+@keyframes timer-shrink {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+.upload-banner__timer-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.25;
+  animation: timer-shrink 5s linear forwards;
+  border-radius: 0 2px 2px 0;
 }

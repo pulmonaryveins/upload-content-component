@@ -2,6 +2,14 @@
   @apply rounded-xl border border-gray-200 bg-white overflow-hidden flex flex-col;
   @apply transition-all duration-200;
   position: relative;
+  animation: card-in 0.2s ease both;
+
+  &:hover:not(.file-card--uploading):not(.file-card--error) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
+  }
+
+  &:active:not(.file-card--uploading) { transform: translateY(-1px); }
 
   &--duplicate {
     @apply border-amber-400 border;
@@ -99,6 +107,15 @@
   &__border-progress-fill {
     transition: stroke-dasharray 0.3s ease;
   }
+
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.file-card {
 
   &__progress-overlay {
     @apply absolute inset-0 flex items-center justify-center;

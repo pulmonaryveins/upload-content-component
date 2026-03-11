@@ -1,4 +1,7 @@
-﻿<div class="upload-banner" [ngClass]="'upload-banner--' + type()">
+﻿<div class="upload-banner" [ngClass]="['upload-banner--' + type(), dismissing() ? 'upload-banner--dismissing' : '']">
+  @if (isError()) {
+    <div class="upload-banner__timer-bar"></div>
+  }
   <div class="upload-banner__body">
     <!-- Icon -->
     <span class="upload-banner__icon">

@@ -42,12 +42,14 @@
               <span class="upload-modal__file-label">Selected Files</span>
             </div>
             <div class="upload-modal__view-controls">
-              <button class="upload-modal__view-btn" [class.upload-modal__view-btn--active]="viewMode() === 'list'" (click)="setViewMode('list')" title="List view">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-              </button>
-              <button class="upload-modal__view-btn" [class.upload-modal__view-btn--active]="viewMode() === 'grid'" (click)="setViewMode('grid')" title="Grid view">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-              </button>
+              <div class="upload-modal__view-toggle">
+                <button class="upload-modal__view-btn" [class.upload-modal__view-btn--active]="viewMode() === 'list'" (click)="setViewMode('list')" title="List view">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </button>
+                <button class="upload-modal__view-btn" [class.upload-modal__view-btn--active]="viewMode() === 'grid'" (click)="setViewMode('grid')" title="Grid view">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                </button>
+              </div>
               <span class="upload-modal__count-badge">{{ files().length }}</span>
             </div>
           </div>
